@@ -53,10 +53,9 @@ def string_checker(question, num_letters, valid_list, custom_error=None):
         print()
 
 
-# checks users enter an integer / float between a low and high number and allows 'xxx'
-# Also allows <enter> if required
-def num_check(question, type, enter, low=None, high=None):
-    # Used ChatGPT to allow the use of the letter 'x' used the prompt below
+# checks users enter a float between a low and high number
+def num_check(question, low=None, high=None):
+    # Used ChatGPT to allow the use of the letter 'x' used the prompt bellow
     # Make that function allow the letter 'x' to be used
 
     situation = ''
@@ -66,24 +65,16 @@ def num_check(question, type, enter, low=None, high=None):
         situation = "low only"
 
     while True:
-        # Ask the question
-        response = input(question)
+        try:
+            # Ask the question
+            response = input(question)
 
-        # Allow user to enter 'xxx'
-        if response == 'xxx':
-            return response
-        # if specified allow user to enter nothing
-        if enter == 'yes':
-            if response == "":
+            # Check if response is 'xxx'
+            if response.lower() == 'xxx':
                 return response
 
-        try:
-            if type == "int":
-                # Convert the response into an integer
-                response = int(response)
-            else:
-                # Convert the response into a float
-                response = float(response)
+            # Convert the response to a float
+            response = float(response)
 
             # Checks input is not too high or
             # too low if both upper and lower bounds are specified
@@ -94,21 +85,15 @@ def num_check(question, type, enter, low=None, high=None):
 
             # Checks input is not too low
             elif situation == "low only":
-                if response < low:
+                if response <= low:
                     color_text(f"Please enter a number that is more than {low}", 'red')
                     continue
 
             return response
 
-        # If error then respond with appropriate error message
         except ValueError:
-            if type == "int":
-                if enter == 'yes':
-                    color_text("Please type either <enter> or an integer that is more than 0", 'red')
-                else:
-                    color_text("Please enter an integer or 'xxx'", 'red')
-            else:
-                color_text("Please enter a number or 'xxx'", 'red')
+            color_text("Please enter a number", 'red')
+            continue
 
 
 # Main Routine
@@ -118,6 +103,7 @@ shapes_2d = ['circle', 'square', 'rectangle', 'triangle', 'shapes']
 shapes_3d = ['cuboid', 'cylinder', 'triangular prism', 'cone',
              'sphere', 'square based pyramid', 'triangle based pyramid', 'shapes']
 area_perm_list = ['area', 'perimeter']
+vol_face_list = ['volume', 'surface area']
 
 # Set pi value
 pi = math.pi
@@ -139,8 +125,6 @@ while True:
 
         elif shape == 'circle':
             print("you picked circle")
-            radius = num_check('Enter radius of circle (half the diameter): ', 'int', 'no')
-            
 
         elif shape == 'square':
             print("you picked square")
@@ -151,6 +135,33 @@ while True:
         else:
             print("you picked triangle")
 
+    else:
+        shape = string_checker("Enter the shape you want (or 'shapes' to see valid options): ", 0, shapes_2d,
+                               "Please enter a valid shape, or enter 'shapes' to see the valid options. ")
+        vol_face = string_checker('Do you want the volume, surface area or both calculated? ', 1, vol_face_list)
 
+        if shape == 'shapes':
+            print("*** Valid 3D Shapes ***")
+            print("cuboid, cylinder, triangular prism, cone, sphere, "
+                  "square based pyramid, triangle based pyramid, shapes")
 
+        elif shape == 'cuboid':
+            print("you picked cuboid")
 
+        elif shape == 'cylinder':
+            print("you picked cylinder")
+
+        elif shape == 'triangular prism':
+            print("you picked triangular prism")
+
+        elif shape == 'cone':
+            print("you picked cone")
+
+        elif shape == 'sphere':
+            print("you picked sphere")
+
+        elif shape == 'square based pyramid':
+            print("you picked square based pyramid")
+
+        elif shape == 'triangle based pyramid':
+            print("you picked triangle based pyramid")
