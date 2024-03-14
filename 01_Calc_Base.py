@@ -1,23 +1,5 @@
+import colorama
 # Functions
-# Lets you change color of printed text easily
-def color_text(text, color):
-    # Code was found using chatGpt using prompt
-    # "Python function that allows me to change the text color"
-    # Code was changed a bit as some parts were unneeded
-
-    # list of colors
-    colors = {
-        'red': '\033[91m',
-        'green': '\033[92m',
-        'yellow': '\033[93m',
-        'blue': '\033[94m',
-        'magenta': '\033[95m',
-        'cyan': '\033[96m',
-        'white': '\033[97m',
-    }
-
-    # Prints text in specified color
-    print(f"{colors[color]}{text}\033[0m")
 
 
 # checks user answers with valid answer
@@ -46,7 +28,7 @@ def string_checker(question, num_letters, valid_list, custom_error=None):
                     return i
 
         # output error if item not in list
-        print(error)
+        print(colorama.Fore.RED + error)
         print()
 
 
@@ -71,15 +53,4 @@ if show_instructions == 'yes':
 
 # Loop code until user quits
 while True:
-    # Ask user to pick 2d / 3d
-    dimension = string_checker('2D or 3D shape? ', 1, dimension_list)
-
-    if dimension == '2d':
-        shape = string_checker("Enter the shape you want (or 'shapes' to see valid options): ", 0, shapes_2d,
-                               "Please enter a valid shape, or enter 'shapes' to see the valid options. ")
-        if shape == 'shapes':
-            print("*** Valid 2D Shapes ***")
-            print("Circle, Square, Rectangle, Triangle")
-        elif shape == 'circle':
-            pass
-
+    pass
