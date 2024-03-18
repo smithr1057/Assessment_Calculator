@@ -119,7 +119,7 @@ def get_user_input(var_dimension):
         if shape == 'shapes':
             print_valid_shapes(var_dimension, shapes_2d if var_dimension == '2d' else shapes_3d)
         else:
-            return f"You picked {shape}"
+            return shape
 
 
 # Main Routine
@@ -133,38 +133,60 @@ pi = math.pi
 # Loop code until user quits
 while True:
 
+    # reset area and perimeter to 0
+    area = 0
+    perimeter = 0
+
+    # ask user what they want calculated
     user_choice = get_user_input('2d')
     area_perimeter = string_checker("Do you want area, perimeter or both calculated? ", 1, area_perm_list)
 
     if user_choice == 'circle':
-        print("you picked circle")
+        # Ask user for required information Then calculate area / perimeter
         radius = num_check('Enter radius of the circle (half the diameter): ', 0)
 
         area = pi * radius ** 2
         perimeter = 2 * pi * radius
 
     elif user_choice == 'square':
-        print("you picked square")
+        # Ask user for required information Then calculate area / perimeter
         length = num_check('Enter length of the square: ', 0)
 
         area = length ** 2
         perimeter = 4 * length
 
     elif user_choice == 'rectangle':
-        print("you picked rectangle")
+        # Ask user for required information Then calculate area / perimeter
         length = num_check('Enter length of the rectangle: ', 0)
-        width = num_check('Enter width of the square: ', 0)
+        width = num_check('Enter width of the rectangle: ', 0)
 
         area = length * width
         perimeter = 2 * (length + width)
 
     else:
-        print("you picked triangle")
-        base = num_check('Enter base of the triangle: ', 0)
-        height = num_check('Enter height of the triangle: ', 0)
-        s1 = ''
-        s2 = ''
-        s3 = ''
+        # Ask user for required information Then calculate area / perimeter
+        if area_perimeter == 'area':
+            base = num_check('Enter base of the triangle: ', 0)
+            height = num_check('Enter height of the triangle: ', 0)
+            area = 0.5 * base * height
+        # if perimeter is needed then use herons equation for area
+        else:
+            s1 = num_check('Enter the length of one of the sides: ', 0)
+            s2 = num_check('Enter the length of a different side: ', 0)
+            s3 = num_check('Enter the length of the last side: ', 0)
+            perimeter = s1 + s2 + s3
+            s = perimeter / 2
+            area = (s * (s - s1) * (s - s2) * (s - s3)) ** 0.5
 
-        area = 0.5 * base * height
-        perimeter = s1 + s2 + s3
+    print()
+
+    if area_perimeter == 'area':
+        print(f'Area: {area:.2f}')
+
+    elif area_perimeter == 'perimeter':
+        print(f'Perimeter: {perimeter:.2f}')
+
+    else:
+        print(f'Area: {area:.2f}')
+        print(f'Perimeter: {perimeter:.2f}')
+    print()
