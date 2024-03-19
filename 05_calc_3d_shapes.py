@@ -119,7 +119,7 @@ def get_user_input(var_dimension):
         if shape == 'shapes':
             print_valid_shapes(var_dimension, shapes_2d if var_dimension == '2d' else shapes_3d)
         else:
-            return f"You picked {shape}"
+            return shape
 
 
 # Main Routine
@@ -182,7 +182,7 @@ while True:
         volume = base ** 2 * height / 3
         face_area = base ** 2 + 2 * base * (base ** 2 / 4 + height ** 2) ** 0.5
 
-    elif user_choice == 'triangle based pyramid':
+    else:
         if vol_face == 'volume':
             height = num_check('Height: ', 0)
             base_width = num_check('Height: ', 0)
