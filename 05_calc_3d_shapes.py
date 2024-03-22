@@ -104,19 +104,22 @@ def print_valid_shapes(dim, shape_list):
 # Asks user for the shape they want and returns it
 def get_user_input(var_dimension):
 
+    # set up valid shape lists including the word 'shapes'
     shapes_2d = ['circle', 'square', 'rectangle', 'triangle', 'shapes']
     shapes_3d = ['cuboid', 'cylinder', 'triangular prism', 'cone',
                  'sphere', 'square based pyramid', 'triangle based pyramid', 'shapes']
 
     while True:
-
+        # pick the valid shape list for 2d or 3d
         shape_list = shapes_2d if var_dimension == '2d' else shapes_3d
 
+        # Ask user for shape if it's not valid then output custom error
         shape = string_checker(f"Enter the shape you want (or 'shapes' to see valid options): ", 0,
                                shape_list,
                                f"Please enter a valid shape, or enter 'shapes' to see the valid options. ")
 
         if shape == 'shapes':
+            # Print out the valid shapes using function
             print_valid_shapes(var_dimension, shapes_2d if var_dimension == '2d' else shapes_3d)
         else:
             return shape
@@ -139,28 +142,27 @@ while True:
     vol_face = string_checker('Do you want the volume, surface area or both calculated? ', 1, vol_face_list)
 
     if user_choice == 'cuboid':
-        length = num_check('Length: ', 0)
-        width = num_check('Width: ', 0)
-        height = num_check('Height: ', 0)
-        volume = length * width * height
-        face_area = 2 * (length * width + width * height + length * height)
+        length = num_check('Edge Length: ', 0)
+        volume = length ** 3
+        face_area = 2 * (length * length + length * length + length * length)
 
     elif user_choice == 'cylinder':
         radius = num_check('Radius: ', 0)
-        length = num_check('Length: ', 0)
-        volume = pi * radius ** 2 * length
-        face_area = pi * radius * (radius + (length ** 2 + radius ** 2) ** 0.5)
+        height = num_check('Height: ', 0)
+        volume = pi * radius ** 2 * height
+        face_area = 2 * pi * radius * height + 2 * pi * radius ** 2
 
     elif user_choice == 'triangular prism':
-        base = num_check('Base (bottom side of the triangle): ', 0)
-        height = num_check('Height: ', 0)
+        a = num_check('Length of one side of the triangle: ', 0)
+        b = num_check('Length of another side of the triangle: ', 0)
+        c = num_check('Length of the last side of the triangle: ', 0)
         length = num_check('Length: ', 0)
-        if vol_face == 'surface area' or vol_face == 'both':
-            s1 = num_check('Length of one of the triangle sides: ', 0)
-            s2 = num_check('Length of one of the triangle sides: ', 0)
-            s3 = num_check('Length of one of the triangle sides: ', 0)
-            face_area = (s1 + s2 + s3) * length + base * height
-        volume = 0.5 * base * height * length
+
+        lat_area = length * (a + b + c)
+        bot_area = 1 / 4 * ((a + b + c) * (b + c - a) * (c + a - b) * (a + b - c)) ** 0.5
+
+        volume = 1 / 4 * length * ((a + b + c) * (b + c - a) * (c + a - b) * (a + b - c)) ** 0.5
+        face_area = lat_area + bot_area + bot_area
 
     elif user_choice == 'cone':
         radius = num_check('Radius: ', 0)
@@ -176,25 +178,25 @@ while True:
         face_area = 4 * pi * radius ** 2
 
     elif user_choice == 'square based pyramid':
-        base = num_check('Base edge: ', 0)
+        width = num_check('Width: ', 0)
         height = num_check('Height: ', 0)
 
-        volume = base ** 2 * height / 3
-        face_area = base ** 2 + 2 * base * (base ** 2 / 4 + height ** 2) ** 0.5
+        volume = width ** 2 * height / 3
+        face_area = width ** 2 + 2 * width * (width ** 2 / 4 + height ** 2) ** 0.5
 
     else:
         if vol_face == 'volume':
             height = num_check('Height: ', 0)
-            base_width = num_check('Height: ', 0)
-            base_height = num_check('Height: ', 0)
+            base_width = num_check('Width of the base triangle: ', 0)
+            base_height = num_check('Height of the base triangle: ', 0)
             base_area = 0.5 * base_width * base_height
             volume = 1 / 3 * base_area * height
 
         else:
-            s1 = num_check('Length of one of the triangle sides: ', 0)
-            s2 = num_check('Length of one of the triangle sides: ', 0)
-            s3 = num_check('Length of one of the triangle sides: ', 0)
-            slant_height = num_check('Height: ', 0)
+            s1 = num_check('Length of one of the base sides: ', 0)
+            s2 = num_check('Length of one of the base sides: ', 0)
+            s3 = num_check('Length of one of the base sides: ', 0)
+            slant_height = num_check('Slant height: ', 0)
 
             base_perimeter = s1 + s2 + s3
             s = base_perimeter / 2
