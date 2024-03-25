@@ -107,7 +107,7 @@ def get_user_input(var_dimension):
     # set up valid shape lists including the word 'shapes'
     shapes_2d = ['circle', 'square', 'rectangle', 'triangle', 'shapes']
     shapes_3d = ['cuboid', 'cylinder', 'triangular prism', 'cone',
-                 'sphere', 'square based pyramid', 'triangle based pyramid', 'shapes']
+                 'sphere', 'square based pyramid', 'triangular pyramid', 'shapes']
 
     while True:
         # pick the valid shape list for 2d or 3d
@@ -185,29 +185,18 @@ while True:
         face_area = width ** 2 + 2 * width * (width ** 2 / 4 + height ** 2) ** 0.5
 
     else:
-        if vol_face == 'volume':
-            height = num_check('Height: ', 0)
-            base_width = num_check('Width of the base triangle: ', 0)
-            base_height = num_check('Height of the base triangle: ', 0)
-            base_area = 0.5 * base_width * base_height
-            volume = 1 / 3 * base_area * height
 
-        else:
-            s1 = num_check('Length of one of the base sides: ', 0)
-            s2 = num_check('Length of one of the base sides: ', 0)
-            s3 = num_check('Length of one of the base sides: ', 0)
-            slant_height = num_check('Slant height: ', 0)
+        height = num_check('Height: ', 0)
+        base_width = num_check('Width of the base triangle: ', 0)
+        apothem = num_check('Apothem length: ', 0)
 
-            base_perimeter = s1 + s2 + s3
-            s = base_perimeter / 2
-            base_area = (s * (s - s1) * (s - s2) * (s - s3)) ** 0.5
+        base_area = 0.5 * base_width * apothem
+        volume = (1 / 6) * base_area * height
 
-            if vol_face == 'both':
-                height = num_check('Height: ', 0)
-                volume = 1 / 3 * base_area * height
-
-            face_area = base_area + 1 / 2 * (base_perimeter * slant_height)
-
+        if vol_face == 'both' or vol_face == 'surface area':
+            sl_height = num_check('Slant_height: ', 0)
+            vol_face = base_area + ((3 / 2) * sl_height)
+            
     print()
 
     if vol_face == 'volume':
