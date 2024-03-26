@@ -107,7 +107,7 @@ def get_user_input(var_dimension):
     # set up valid shape lists including the word 'shapes'
     shapes_2d = ['circle', 'square', 'rectangle', 'triangle', 'shapes']
     shapes_3d = ['cuboid', 'cylinder', 'triangular prism', 'cone',
-                 'sphere', 'square based pyramid', 'triangular pyramid', 'shapes']
+                 'sphere', 'square based pyramid', 'triangle based pyramid', 'shapes']
 
     while True:
         # pick the valid shape list for 2d or 3d
@@ -141,6 +141,7 @@ while True:
     user_choice = get_user_input('3d')
     vol_face = string_checker('Do you want the volume, surface area or both calculated? ', 1, vol_face_list)
 
+    # Ask user for required information Then calculate volume / surface area
     if user_choice == 'cuboid':
         length = num_check('Edge Length: ', 0)
         volume = length ** 3
@@ -190,12 +191,12 @@ while True:
         base_width = num_check('Width of the base triangle: ', 0)
         apothem = num_check('Apothem length: ', 0)
 
-        base_area = 0.5 * base_width * apothem
+        base_area = 0.5 * apothem * base_width
         volume = (1 / 6) * base_area * height
 
         if vol_face == 'both' or vol_face == 'surface area':
             sl_height = num_check('Slant_height: ', 0)
-            vol_face = base_area + ((3 / 2) * sl_height)
+            face_area = base_area + ((3 / 2) * sl_height)
             
     print()
 
