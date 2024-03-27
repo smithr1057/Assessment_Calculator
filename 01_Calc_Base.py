@@ -37,13 +37,39 @@ def instructions():
     return "*** Instructions ***"
 
 
+# Prints out the valid shapes from the necessary list
+def print_valid_shapes(dim, shape_list):
+    print(f"*** Valid {dim} Shapes ***")
+    print(", ".join(shape_list))
+
+
+# Asks user for the shape they want and returns it
+def get_user_input(var_dimension):
+    # set up valid shape lists including the word 'shapes'
+    shapes_2d = ['circle', 'square', 'rectangle', 'triangle', 'shapes']
+    shapes_3d = ['cuboid', 'cylinder', 'triangular prism', 'cone',
+                 'sphere', 'square based pyramid', 'triangle based pyramid', 'shapes']
+
+    while True:
+        # pick the valid shape list for 2d or 3d
+        shape_list = shapes_2d if var_dimension == '2d' else shapes_3d
+
+        # Ask user for shape if it's not valid then output custom error
+        shape = string_checker(f"Enter the shape you want (or 'shapes' to see valid options): ", 0,
+                               shape_list,
+                               f"Please enter a valid shape, or enter 'shapes' to see the valid options. ")
+
+        if shape == 'shapes':
+            # Print out the valid shapes using function
+            print_valid_shapes(var_dimension, shapes_2d if var_dimension == '2d' else shapes_3d)
+        else:
+            return shape
+
+
 # Main Routine
 # Lists
 yn_list = ['yes', 'no']
 dimension_list = ['2d', '3d']
-shapes_2d = ['circle', 'square', 'rectangle', 'triangle', 'shapes']
-shapes_3d = ['cuboid', 'cylinder', 'triangular prism', 'cone',
-             'sphere', 'square based pyramid', 'triangle based pyramid', 'shapes']
 
 # Asks user if they want to read instructions, if yes output instructions
 show_instructions = string_checker("Do you want to read the instructions? ", 1, yn_list)
