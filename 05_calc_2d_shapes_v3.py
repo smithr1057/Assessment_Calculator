@@ -1,3 +1,4 @@
+# V3 - Fixed ChatGPTs broken code and removed some unnecessary code
 import math
 
 
@@ -64,6 +65,8 @@ def get_user_input(var_dimension):
             return shape
 
 
+# Main Routine
+
 # Dictionary containing prompts and units for each input
 input_prompts = {
     'circle': {'radius': ('radius', 'Enter radius of the circle (half the diameter): ', '')},
@@ -98,12 +101,14 @@ shape_2d_calculations = {
     }
 }
 
-# Main Routine
 area_perm_list = ['area', 'perimeter', 'both']
 pi = math.pi
 
 while True:
+    # reset answer values
     area = perimeter = 0
+
+    # Ask user for shape and area, perimeter or both
     user_choice = get_user_input('2d')
     area_perimeter = string_checker("Do you want area, perimeter or both calculated? ", area_perm_list,
                                     "Please choose 'area', 'perimeter' or 'both'")
