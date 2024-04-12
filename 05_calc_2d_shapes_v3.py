@@ -110,6 +110,7 @@ while True:
 
     # Ask user for shape and area, perimeter or both
     user_choice = get_user_input('2d')
+    print()
     area_perimeter = string_checker("Do you want area, perimeter or both calculated? ", area_perm_list,
                                     "Please choose 'area', 'perimeter' or 'both'")
 
@@ -117,25 +118,18 @@ while True:
         # Retrieve prompts for user inputs associated with the chosen shape
         prompts = input_prompts[user_choice]
 
-        if area_perimeter in ['area', 'both']:
-            # Create dictionary for user inputs needed for area calculation
-            inputs = {
-                # Get user input for each parameter then iterate over parameter and prompt
-                key: num_check(prompt[1], 0)
-                for key, prompt in prompts.items()
-            }
+        # Create dictionary for user inputs needed for area calculation
+        inputs = {
+            # Get user input for each parameter then iterate over parameter and prompt
+            key: num_check(prompt[1], 0)
+            for key, prompt in prompts.items()
+        }
 
+        if area_perimeter in ['area', 'both']:
             # Calculate area based on the chosen shape and user inputs
             area = shape_2d_calculations[user_choice]['area'](*inputs.values())
 
         if area_perimeter in ['perimeter', 'both']:
-            # Create dictionary for user inputs needed for area calculation
-            inputs = {
-                # Get user input for each parameter then iterate over parameter and prompt
-                key: num_check(prompt[1], 0)
-                for key, prompt in prompts.items()
-            }
-
             # Calculate perimeter based on the chosen shape and user inputs
             perimeter = shape_2d_calculations[user_choice]['perimeter'](*inputs.values())
 

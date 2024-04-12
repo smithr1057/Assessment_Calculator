@@ -98,7 +98,7 @@ def num_check(question, low=None, high=None):
 # Prints out the valid shapes from the necessary list
 def print_valid_shapes(dim, shape_list):
     print(f"*** Valid {dim} Shapes ***")
-    print(", ".join(shape_list))
+    print(", ".join(shape_list[:-1]))  # Exclude 'shapes'
 
 
 # Asks user for the shape they want and returns it
@@ -130,66 +130,71 @@ def get_user_input(var_dimension):
 # Dictionary mapping shapes to their parameters and prompts
 input_prompts_3d = {
     'cuboid': {
-        'length': 'Edge Length: '
+        'length': ('length', 'Length: ', '')
     },
+
     'cylinder': {
-        'radius': 'Radius: ',
-        'height': 'Height: '
+        'radius': ('radius', 'Radius: ', ''),
+        'height': ('height', 'Height: ', '')
     },
     'triangular prism': {
-        'a': 'Length of one side of the triangle: ',
-        'b': 'Length of another side of the triangle: ',
-        'c': 'Length of the last side of the triangle: ',
-        'length': 'Length: '
+        'side1': ('side1', 'Enter the length of one of the triangles sides: ', ''),
+        'side2': ('side2', 'Enter the length of a different side: ', ''),
+        'side3': ('side3', 'Enter the length of the last side: ', ''),
+        'length': ('length', 'Length: ', '')
     },
+
     'cone': {
-        'radius': 'Radius: ',
-        'height': 'Height: '
+        'radius': ('radius', 'Radius: ', ''),
+        'height': ('height', 'Height: ', '')
     },
+
     'sphere': {
-        'radius': 'Radius: '
+        'radius': ('radius', 'Radius: ', '')
     },
+
     'square based pyramid': {
-        'width': 'Width: ',
-        'height': 'Height: '
+        'width': ('width', 'Width: ', ''),
+        'height': ('height', 'Height: ', '')
     },
+
     'triangle based pyramid': {
-        'height': 'Height: ',
-        'base_width': 'Width of the base triangle: ',
-        'apothem': 'Apothem length: ',
-        'sl_height': 'Slant_height: '
+        'height': ('height', 'Height: ', ''),
+        'base_width': ('width', 'Width of the base triangle: ', ''),
+        'apothem': ('apothem', 'Apothem length: ', ''),
+        'sl_height': ('slant', 'Slant_height: ', '')
     }
 }
 
 # Dictionary mapping shapes to their formulas for volume and surface area
 shape_formulas_3d = {
     'cuboid': {
-        'volume': lambda length: length ** 3,
-        'surface area': lambda length: 2 * (length * length + length * length + length * length)
+        'volume': lambda l: l ** 3,
+        'surface area': lambda l: 2 * (l * l + l * l + l * l)
     },
     'cylinder': {
-        'volume': lambda radius, height: pi * radius ** 2 * height,
-        'surface area': lambda radius, height: 2 * pi * radius * height + 2 * pi * radius ** 2
+        'volume': lambda r, h: pi * r ** 2 * h,
+        'surface area': lambda r, h: 2 * pi * r * h + 2 * pi * r ** 2
     },
     'triangular prism': {
-        'volume': lambda a, b, c, length: 1 / 4 * length * ((a + b + c) * (b + c - a) * (c + a - b) * (a + b - c)) ** 0.5,
-        'surface area': lambda a, b, c, length: length * (a + b + c) + 1 / 4 * ((a + b + c) * (b + c - a) * (c + a - b) * (a + b - c)) ** 0.5 + 1 / 4 * ((a + b + c) * (b + c - a) * (c + a - b) * (a + b - c)) ** 0.5
+        'volume': lambda a, b, c, l: 1 / 4 * l * ((a + b + c) * (b + c - a) * (c + a - b) * (a + b - c)) ** 0.5,
+        'surface area': lambda a, b, c, l: l * (a + b + c) + 1 / 4 * ((a + b + c) * (b + c - a) * (c + a - b) * (a + b - c)) ** 0.5 + 1 / 4 * ((a + b + c) * (b + c - a) * (c + a - b) * (a + b - c)) ** 0.5
     },
     'cone': {
-        'volume': lambda radius, height: 1/3 * pi * radius ** 2 * height,
-        'surface area': lambda radius, height: pi * radius * (radius + (height ** 2 + radius ** 2) ** 0.5)
+        'volume': lambda r, h: 1/3 * pi * r ** 2 * h,
+        'surface area': lambda r, h: pi * r * (r + (h ** 2 + r ** 2) ** 0.5)
     },
     'sphere': {
-        'volume': lambda radius: 4 / 3 * pi * radius ** 3,
-        'surface area': lambda radius: 4 * pi * radius ** 2
+        'volume': lambda r: 4 / 3 * pi * r ** 3,
+        'surface area': lambda r: 4 * pi * r ** 2
     },
     'square based pyramid': {
-        'volume': lambda width, height: width ** 2 * height / 3,
-        'surface area': lambda width, height: width ** 2 + 2 * width * (width ** 2 / 4 + height ** 2) ** 0.5
+        'volume': lambda w, h: w ** 2 * h / 3,
+        'surface area': lambda w, h: w ** 2 + 2 * w * (w ** 2 / 4 + h ** 2) ** 0.5
     },
     'triangle based pyramid': {
-        'volume': lambda base_width, apothem, height: (1 / 6) * (0.5 * base_width * apothem) * height,
-        'surface area': lambda base_width, apothem, height, sl_height: (0.5 * base_width * sl_height) + ((3 / 2) * sl_height)
+        'volume': lambda bw, a, h: (1 / 6) * (0.5 * bw * a) * h,
+        'surface area': lambda bw, a, h, sl: (0.5 * bw * sl) + ((3 / 2) * sl)
     }
 }
 
@@ -203,84 +208,35 @@ pi = math.pi
 # Loop code until user quits
 while True:
 
-    volume = 0
-    face_area = 0
+    volume = surface_area = 0
 
     user_choice = get_user_input('3d')
+    print()
     vol_face = string_checker('Do you want the volume, surface area or both calculated? ', 1, vol_face_list)
 
-    # Ask user for required information Then calculate volume / surface area
-    # for specified shape
-    if user_choice == 'cuboid':
-        length = num_check('Edge Length: ', 0)
-        volume = length ** 3
-        face_area = 2 * (length * length + length * length + length * length)
+    if user_choice in shape_formulas_3d:
+        # Retrieve prompts for user inputs associated with the chosen shape
+        prompts = input_prompts_3d[user_choice]
 
-    elif user_choice == 'cylinder':
-        radius = num_check('Radius: ', 0)
-        height = num_check('Height: ', 0)
+        # Create dictionary for user inputs needed for area calculation
+        inputs = {
+            # Get user input for each parameter then iterate over parameter and prompt
+            key: num_check(prompt[1], 0)
+            for key, prompt in prompts.items()
+        }
 
-        volume = pi * radius ** 2 * height
-        face_area = 2 * pi * radius * height + 2 * pi * radius ** 2
+        if vol_face in ['volume', 'both']:
+            # Calculate area based on the chosen shape and user inputs
+            volume = shape_formulas_3d[user_choice]['volume'](*inputs.values())
 
-    elif user_choice == 'triangular prism':
-        a = num_check('Length of one side of the triangle: ', 0)
-        b = num_check('Length of another side of the triangle: ', 0)
-        c = num_check('Length of the last side of the triangle: ', 0)
-        length = num_check('Length: ', 0)
-
-        # calculate needed values
-        lat_area = length * (a + b + c)
-        bot_area = 1 / 4 * ((a + b + c) * (b + c - a) * (c + a - b) * (a + b - c)) ** 0.5
-
-        volume = 1 / 4 * length * ((a + b + c) * (b + c - a) * (c + a - b) * (a + b - c)) ** 0.5
-        face_area = lat_area + bot_area + bot_area
-
-    elif user_choice == 'cone':
-        radius = num_check('Radius: ', 0)
-        height = num_check('Height: ', 0)
-
-        volume = 1/3 * pi * radius ** 2 * height
-        face_area = pi * radius * (radius + (height ** 2 + radius ** 2) ** 0.5)
-
-    elif user_choice == 'sphere':
-        radius = num_check('Radius: ', 0)
-
-        volume = 4 / 3 * pi * radius ** 3
-        face_area = 4 * pi * radius ** 2
-
-    elif user_choice == 'square based pyramid':
-        width = num_check('Width: ', 0)
-        height = num_check('Height: ', 0)
-
-        volume = width ** 2 * height / 3
-        face_area = width ** 2 + 2 * width * (width ** 2 / 4 + height ** 2) ** 0.5
-
-    else:
-
-        height = num_check('Height: ', 0)
-        base_width = num_check('Width of the base triangle: ', 0)
-        apothem = num_check('Apothem length: ', 0)
-
-        # calculate needed values
-        base_area = 0.5 * apothem * base_width
-        volume = (1 / 6) * base_area * height
-
-        # if surface area is needed ask for slant height
-        if vol_face == 'both' or vol_face == 'surface area':
-            sl_height = num_check('Slant_height: ', 0)
-            face_area = base_area + ((3 / 2) * sl_height)
-            
+        if vol_face in ['surface area', 'both']:
+            # Calculate perimeter based on the chosen shape and user inputs
+            surface_area = shape_formulas_3d[user_choice]['surface area'](*inputs.values())
     print()
 
     # Output the necessary answers
-    if vol_face == 'volume':
+    if vol_face in ['volume', 'both']:
         print(f'Volume: {volume:.2f}')
-
-    elif vol_face == 'surface area':
-        print(f'Surface Area: {face_area:.2f}')
-
-    else:
-        print(f'Volume: {volume:.2f}')
-        print(f'Surface Area: {face_area:.2f}')
+    if vol_face in ['surface area', 'both']:
+        print(f'Surface Area: {surface_area:.2f}')
     print()
