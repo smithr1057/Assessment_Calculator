@@ -35,11 +35,11 @@ def color_text(text, color):
 
 
 # Calculates
-def calc_shape(user_choice):
+def calc_shape(shape, dimension, answers):
 
-    if user_choice == '2d':
+    if dimension == '2d':
 
-        two_answers =
+        two_answers_list = ['area', 'perimeter', 'both']
 
         # Dictionary containing prompts and units for each input
         input_prompts = {
@@ -75,6 +75,9 @@ def calc_shape(user_choice):
             }
         }
     else:
+
+        two_answers_list = ['volume', 'surface area', 'both']
+
         # Dictionary mapping shapes to their parameters and prompts
         input_prompts = {
             'cuboid': {
@@ -150,7 +153,7 @@ def calc_shape(user_choice):
         }
 
     # Retrieve prompts for user inputs associated with the chosen shape
-    prompts = input_prompts[user_choice]
+    prompts = input_prompts[shape]
 
     # Create dictionary for user inputs needed for area calculation
     inputs = {
@@ -159,18 +162,21 @@ def calc_shape(user_choice):
         for key, prompt in prompts.items()
     }
 
-    if area_perimeter in ['area', 'both']:
+    if answers == two_answers_list[0] or two_answers_list[2]:
         # Calculate area based on the chosen shape and user inputs
-        area = shape_calculations[user_choice]['area'](*inputs.values())
+        area_volume = shape_calculations[shape][two_answers_list[0]](*inputs.values())
 
-    if area_perimeter in ['perimeter', 'both']:
+    if answers == two_answers_list[1] or two_answers_list[2]:
         # Calculate perimeter based on the chosen shape and user inputs
-        perimeter = shape_calculations[user_choice]['perimeter'](*inputs.values())
+        perimeter_surface = shape_calculations[shape][two_answers_list[1]](*inputs.values())
 
     print()
-    if area_perimeter in ['area', 'both']:
-        print(f'Area: {area:.2f}')
-    if area_perimeter in ['perimeter', 'both']:
-        print(f'Perimeter: {perimeter:.2f}')
+    if answers == two_answers_list[0] or two_answers_list[2]:
+        print(f'{two_answers_list[0]}: {area_volume:.2f}')
+    if answers == two_answers_list[1] or two_answers_list[2]:
+        print(f'{two_answers_list[1]}: {perimeter_surface:.2f}')
     print()
 
+
+# Main Routine
+calc_shape('square', '2d', 'both')
