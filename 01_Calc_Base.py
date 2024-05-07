@@ -116,18 +116,19 @@ def print_valid_shapes(dim, shape_list):
 def get_user_input(var_dimension):
 
     # set up valid shape lists including the word 'shapes'
-    shapes_2d = ['circle', 'square', 'rectangle', 'triangle', 'shapes']
+    shapes_2d = ['circle', 'square', 'rectangle', 'triangle', 'shapes', 'xxx']
     shapes_3d = ['cuboid', 'cylinder', 'triangular prism', 'cone',
-                 'sphere', 'square based pyramid', 'triangle based pyramid', 'shapes']
+                 'sphere', 'square based pyramid', 'triangle based pyramid', 'shapes', 'xxx']
 
     while True:
         # pick the valid shape list for 2d or 3d
         shape_list = shapes_2d if var_dimension == '2d' else shapes_3d
 
         # Ask user for shape if it's not valid then output custom error
-        shape = string_checker(f"Enter the shape you want (or 'shapes' to see valid options): ", 0,
+        shape = string_checker(f"Enter the shape you want ('shapes' to see valid options / 'xxx' to quit): ", 0,
                                shape_list,
-                               f"Please enter a valid shape, or enter 'shapes' to see the valid options. ")
+                               f"Please enter a valid shape, or enter 'shapes' to see the valid options / "
+                               f"'xxx' to quit. ")
 
         if shape == 'shapes':
             # Print out the valid shapes using function
@@ -262,7 +263,7 @@ def calc_shape(shape, dimension, to_calculate):
     # Retrieve prompts for user inputs associated with the chosen shape
     prompts = input_prompts[shape]
 
-    # Create dictionary for user inputs needed for area calculation
+    # Create dictionary for user inputs needed for calculation
     inputs = {
         # Get user input for each parameter then iterate over parameter and prompt
         key: num_check(prompt[1], 0)
@@ -280,6 +281,7 @@ def calc_shape(shape, dimension, to_calculate):
     print()
     if to_calculate == to_calculate_list[0] or to_calculate_list[2]:
         print(f'{to_calculate_list[0]}: {answer_one:.2f}')
+
     if to_calculate == to_calculate_list[1] or to_calculate_list[2]:
         print(f'{to_calculate_list[1]}: {answer_two:.2f}')
     print()
@@ -308,14 +310,13 @@ if show_instructions == 'yes':
 # Loop code until user quits
 while True:
     # Ask user to choose between 2d or 3d shapes
-    dimensions = string_checker('2D or 3D shape? ', 1, ['2d', '3d', 'xxx'])
-
-    # If user enters 'xxx' quit
-    if dimensions == 'xxx':
-        break
+    dimensions = string_checker("2D or 3D shape? ", 1, dimension_list)
 
     # Asks user for a valid shape as per earlier choice
     user_shape = get_user_input(dimensions)
+
+    if user_shape == 'xxx':
+        break
 
     print()
 
@@ -324,6 +325,6 @@ while True:
     else:
         whats_calculated = string_checker('Do you want the volume, surface area or both calculated? ', 1, vol_face_list)
 
-    calc_shape(user_shape, dimensions, whats_calculated)
+    answers = calc_shape(user_shape, dimensions, whats_calculated)
 
 print(color_text('Thank you for using the Super Shape Calculator', 'green'))
