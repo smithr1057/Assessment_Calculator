@@ -2,6 +2,7 @@ import pandas
 import math
 
 
+# Functions
 # Function to check numerical input
 def num_check(question, low=None, high=None):
     while True:
@@ -19,12 +20,102 @@ def num_check(question, low=None, high=None):
             color_text(str(e), 'red')
 
 
+# Prints out the valid shapes from the necessary list
+def print_valid_shapes(dim, list_of_shapes):
+    print()
+    print(f"*** Valid {dim} Shapes ***")
+    print(", ".join(list_of_shapes[:-2]))  # Exclude 'shapes' and 'xxx'
+    print()
+
+
+# Asks user for the shape they want and returns it
+def get_user_input(var_dimension):
+
+    # set up valid shape lists including the word 'shapes'
+    shapes_2d = ['circle', 'square', 'rectangle', 'triangle', 'shapes', 'xxx']
+    shapes_3d = ['cuboid', 'cylinder', 'triangular prism', 'cone',
+                 'sphere', 'square based pyramid', 'triangle based pyramid', 'shapes', 'xxx']
+
+    while True:
+        # pick the valid shape list for 2d or 3d
+        shape_list = shapes_2d if var_dimension == '2d' else shapes_3d
+
+        # Ask user for shape if it's not valid then output custom error
+        shape = string_checker(f"Enter the shape you want ('shapes' to see valid options / 'xxx' to quit): ", 0,
+                               shape_list,
+                               f"Please enter a valid shape, or enter 'shapes' to see the valid options / "
+                               f"'xxx' to quit. ")
+
+        if shape == 'shapes':
+            # Print out the valid shapes using function
+            print_valid_shapes(var_dimension, shapes_2d if var_dimension == '2d' else shapes_3d)
+        else:
+            return shape
+
+
+# Lets you change color of printed text easily
+def color_text(text, color):
+    # Code was found using chatGpt using prompt
+    # "Python function that allows me to change the text color"
+    # Code was changed a bit as some parts were unneeded
+
+    # list of colors
+    colors = {
+        'red': '\033[91m',
+        'green': '\033[92m',
+        'yellow': '\033[93m',
+        'blue': '\033[94m',
+        'magenta': '\033[95m',
+        'cyan': '\033[96m',
+        'white': '\033[97m',
+    }
+
+    # Prints text in specified color
+    return f"{colors[color]}{text}\033[0m"
+
+
+# checks user answers with valid answer
+def string_checker(question, num_letters, valid_list, custom_error=None):
+
+    if custom_error is None:
+        if len(valid_list) == 3:
+            error = f"Please choose {valid_list[0]}, {valid_list[1]} or {valid_list[2]}"
+        else:
+            error = f"Please choose {valid_list[0]} or {valid_list[1]}"
+    else:
+        error = custom_error
+
+    while True:
+
+        # Ask user for choice (and put it in lowercase)
+        response = input(question).lower()
+
+        # iterates through list and if response is an item
+        # in the list (or the first letter of an item), the
+        # full item name is returned
+        if num_letters == 0:
+            for i in valid_list:
+                if response == i:
+                    return i
+        else:
+            for i in valid_list:
+                if response == i[:num_letters] or response == i:
+                    return i
+
+        # output error if item not in list
+        print(color_text(error, 'red'))
+        print()
+
+
 # Calculates shapes area and perimeter /
 # volume and surface area and prints out the answer
 def calc_shape(shape, dimension, to_calculate):
 
     # Set answer values
     answer_one = answer_two = ''
+
+    # Set up the parameter dictionary
+    parameter_dict = {}
 
     # Set input prompts and shape calculations
     if dimension == '2d':
@@ -147,11 +238,12 @@ def calc_shape(shape, dimension, to_calculate):
         if parameter not in inputs:
             value_list.append('N/A')
 
+    # Iterate through parameters and values in inputs
     for key, value in inputs.items():
+        # Add values into the corresponding list using the parameter_list_dict
         parameter_list_dict[key].append(value)
-        parameter_dict = {
-            key: parameter_list_dict[key]
-        }
+        # Add the parameter and list into parameter dictionary
+        parameter_dict.update({key: parameter_list_dict[key]})
 
     # Add parameters of the shape and their values to the panda_dict
     panda_dict.update(parameter_dict)
@@ -167,101 +259,28 @@ def calc_shape(shape, dimension, to_calculate):
         answer_two = shape_calculations[shape][to_calculate_list[1]](*inputs.values())
 
     print()
+
+    # If user asked for area / volume or both then print answer one (area / volume)
     if to_calculate == to_calculate_list[0] or to_calculate_list[2]:
         print(f'{to_calculate_list[0]}: {answer_one:.2f}')
 
+    # If user asked for perimeter / surface area or both then print answer two (perimeter / surface area)
     if to_calculate == to_calculate_list[1] or to_calculate_list[2]:
         print(f'{to_calculate_list[1]}: {answer_two:.2f}')
-    print()
 
-
-# Prints out the valid shapes from the necessary list
-def print_valid_shapes(dim, list_of_shapes):
-    print()
-    print(f"*** Valid {dim} Shapes ***")
-    print(", ".join(list_of_shapes[:-2]))  # Exclude 'shapes' and 'xxx'
-    print()
-
-
-# Asks user for the shape they want and returns it
-def get_user_input(var_dimension):
-
-    # set up valid shape lists including the word 'shapes'
-    shapes_2d = ['circle', 'square', 'rectangle', 'triangle', 'shapes', 'xxx']
-    shapes_3d = ['cuboid', 'cylinder', 'triangular prism', 'cone',
-                 'sphere', 'square based pyramid', 'triangle based pyramid', 'shapes', 'xxx']
-
-    while True:
-        # pick the valid shape list for 2d or 3d
-        shape_list = shapes_2d if var_dimension == '2d' else shapes_3d
-
-        # Ask user for shape if it's not valid then output custom error
-        shape = string_checker(f"Enter the shape you want ('shapes' to see valid options / 'xxx' to quit): ", 0,
-                               shape_list,
-                               f"Please enter a valid shape, or enter 'shapes' to see the valid options / "
-                               f"'xxx' to quit. ")
-
-        if shape == 'shapes':
-            # Print out the valid shapes using function
-            print_valid_shapes(var_dimension, shapes_2d if var_dimension == '2d' else shapes_3d)
-        else:
-            return shape
-
-
-# Lets you change color of printed text easily
-def color_text(text, color):
-    # Code was found using chatGpt using prompt
-    # "Python function that allows me to change the text color"
-    # Code was changed a bit as some parts were unneeded
-
-    # list of colors
-    colors = {
-        'red': '\033[91m',
-        'green': '\033[92m',
-        'yellow': '\033[93m',
-        'blue': '\033[94m',
-        'magenta': '\033[95m',
-        'cyan': '\033[96m',
-        'white': '\033[97m',
-    }
-
-    # Prints text in specified color
-    return f"{colors[color]}{text}\033[0m"
-
-
-# checks user answers with valid answer
-def string_checker(question, num_letters, valid_list, custom_error=None):
-
-    if custom_error is None:
-        if len(valid_list) == 3:
-            error = f"Please choose {valid_list[0]}, {valid_list[1]} or {valid_list[2]}"
-        else:
-            error = f"Please choose {valid_list[0]} or {valid_list[1]}"
+    # If a 2d shape then add answer to the 2d shape lists
+    if dimension == '2d':
+        area_list.append(answer_one)
+        perimeter_list.append(answer_two)
+    # If a 3d shape then add answer to the 3d shape lists
     else:
-        error = custom_error
+        volume_list.append(answer_one)
+        surface_area_list.append(answer_two)
 
-    while True:
-
-        # Ask user for choice (and put it in lowercase)
-        response = input(question).lower()
-
-        # iterates through list and if response is an item
-        # in the list (or the first letter of an item), the
-        # full item name is returned
-        if num_letters == 0:
-            for i in valid_list:
-                if response == i:
-                    return i
-        else:
-            for i in valid_list:
-                if response == i[:num_letters] or response == i:
-                    return i
-
-        # output error if item not in list
-        print(color_text(error, 'red'))
-        print()
+    print()
 
 
+# Main Routine
 # Set pi
 pi = math.pi
 
@@ -269,8 +288,8 @@ pi = math.pi
 # Set up lists
 yn_list = ['yes', 'no']
 dimension_list = ['2d', '3d']
-area_perm_list = ['area', 'perimeter', 'both']
-vol_face_list = ['volume', 'surface area', 'both']
+option_list_2d = ['area', 'perimeter', 'both']
+option_list_3d = ['volume', 'surface area', 'both']
 
 # Create empty lists for parameters
 length_list = []
@@ -290,9 +309,45 @@ parameter_list_dict = {
 }
 
 while True:
-    # Set up dictionaries and lists
+    # Set up lists for answers
+    # 2d answers
+    area_list = []
+    perimeter_list = []
+    answer_2d_dict = {
+        'Area': area_list,
+        'perimeter': perimeter_list
+    }
+
+    # 3d answers
+    volume_list = []
+    surface_area_list = []
+    answer_3d_dict = {
+        'Volume': volume_list,
+        'surface area': surface_area_list
+    }
+
+    # Create empty lists for parameters
+    length_list = []
+    radius_list = []
+    width_list = []
+    side1_list = []
+    side2_list = []
+    side3_list = []
+
+    # Create dict to link parameters to their lists
+    parameter_list_dict = {
+        'length': length_list,
+        'radius': radius_list,
+        'width': width_list,
+        'side1': side1_list,
+        'side2': side2_list,
+        'side3': side3_list
+    }
+
+    # Set up a list for shapes
     shape_list = []
 
+    # Create the dict used for the panda
     panda_dict = {
         "Shape": shape_list
     }
@@ -316,15 +371,24 @@ while True:
 
         # Ask if user wants area or perimeter calculated
         if dimensions == '2d':
-            whats_calculated = string_checker("Do you want area, perimeter or both calculated? ", 1, area_perm_list)
+            whats_calculated = string_checker("Do you want area, perimeter or both calculated? ", 1, option_list_2d)
         # Ask if user wants volume or surface area calculated
         else:
             whats_calculated = string_checker('Do you want the volume, surface area or both calculated? ', 1,
-                                              vol_face_list)
+                                              option_list_3d)
 
         # Use calc shape func to calculate answer,
         calc_shape(user_shape, dimensions, whats_calculated)
 
+    # Add the answers to the panda dictionary
+    # If 2d add the 2d answers
+    if dimensions == '2d':
+        panda_dict.update(answer_2d_dict)
+    # If 3d add the 3d answers
+    else:
+        panda_dict.update(answer_3d_dict)
+
+    # Print the dictionary used for pandas for testing
     print(panda_dict)
 
     # Create the table frame for our data
@@ -334,7 +398,6 @@ while True:
     results_frame = results_frame.set_index('Shape')
 
     # Print the panda
-
     print(results_frame)
 
     # Ask user if they want to use the calculator again
