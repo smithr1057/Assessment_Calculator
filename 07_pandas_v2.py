@@ -124,13 +124,13 @@ def calc_shape(shape, dimension, to_calculate):
 
         # Dictionary containing prompts and units for each input
         input_prompts = {
-            'circle': {'radius': ('radius', 'Enter radius of the circle (half the diameter): ', '')},
-            'square': {'length': ('length', 'Enter length of the square: ', '')},
-            'rectangle': {'length': ('length', 'Enter length of the rectangle: ', ''),
-                          'width': ('width', 'Enter width of the rectangle: ', '')},
-            'triangle': {'side1': ('side1', 'Enter the length of one of the sides: ', ''),
-                         'side2': ('side2', 'Enter the length of a different side: ', ''),
-                         'side3': ('side3', 'Enter the length of the last side: ', '')}
+            'circle': {'radius': ('radius', 'Radius: ', '')},
+            'square': {'length': ('length', 'Length: ', '')},
+            'rectangle': {'length': ('length', 'Length: ', ''),
+                          'width': ('width', 'Width: ', '')},
+            'triangle': {'side1': ('side1', 'First side: ', ''),
+                         'side2': ('side2', 'Second side: ', ''),
+                         'side3': ('side3', 'Third side: ', '')}
         }
 
         # Dictionary containing formulas for area and perimeter calculation for each shape
@@ -148,10 +148,7 @@ def calc_shape(shape, dimension, to_calculate):
                 'perimeter': lambda l, w: 2 * (l + w)
             },
             'triangle': {
-                'area': lambda s1, s2, s3: (((s1 + s2 + s3) / 2) *
-                                            (((s1 + s2 + s3) / 2) - s1) *
-                                            (((s1 + s2 + s3) / 2) - s2) *
-                                            (((s1 + s2 + s3) / 2) - s3)) ** 0.5,
+                'area': lambda s1, s2, s3: (((s1 + s2 + s3) / 2) * (((s1 + s2 + s3) / 2) - s1) * (((s1 + s2 + s3) / 2) - s2) * (((s1 + s2 + s3) / 2) - s3)) ** 0.5,
                 'perimeter': lambda s1, s2, s3: s1 + s2 + s3
             }
         }
@@ -166,9 +163,9 @@ def calc_shape(shape, dimension, to_calculate):
                          'height': ('height', 'Height: ', '')},
 
             'triangular prism': {
-                'side1': ('side1', 'Enter the length of one of the triangles sides: ', ''),
-                'side2': ('side2', 'Enter the length of a different side: ', ''),
-                'side3': ('side3', 'Enter the length of the last side: ', ''),
+                'side1': ('side1', 'First side of triangle: ', ''),
+                'side2': ('side2', 'Second side of triangle: ', ''),
+                'side3': ('side3', 'Third side of triangle: ', ''),
                 'length': ('length', 'Length: ', '')},
 
             'cone': {
@@ -252,21 +249,23 @@ def calc_shape(shape, dimension, to_calculate):
     if to_calculate == to_calculate_list[0] or to_calculate_list[2]:
         # Calculate area / volume based on the chosen shape and user inputs
         answer_one = shape_calculations[shape][to_calculate_list[0]](*inputs.values())
+        answer_one = round(answer_one, 2)
 
     # If user wants 'perimeter' / 'surface area' or 'both' calculated
     if to_calculate == to_calculate_list[1] or to_calculate_list[2]:
         # Calculate perimeter / surface area based on the chosen shape and user inputs
         answer_two = shape_calculations[shape][to_calculate_list[1]](*inputs.values())
+        answer_two = round(answer_two, 2)
 
     print()
 
     # If user asked for area / volume or both then print answer one (area / volume)
     if to_calculate == to_calculate_list[0] or to_calculate_list[2]:
-        print(f'{to_calculate_list[0]}: {answer_one:.2f}')
+        print(f'{to_calculate_list[0]}: {answer_one}')
 
     # If user asked for perimeter / surface area or both then print answer two (perimeter / surface area)
     if to_calculate == to_calculate_list[1] or to_calculate_list[2]:
-        print(f'{to_calculate_list[1]}: {answer_two:.2f}')
+        print(f'{to_calculate_list[1]}: {answer_two}')
 
     # If a 2d shape then add answer to the 2d shape lists
     if dimension == '2d':
@@ -295,17 +294,23 @@ option_list_3d = ['volume', 'surface area', 'both']
 length_list = []
 radius_list = []
 width_list = []
+height_list = []
 side1_list = []
 side2_list = []
 side3_list = []
+base_area_list = []
+base_edge_list = []
 
 parameter_list_dict = {
     'length': length_list,
     'radius': radius_list,
     'width': width_list,
+    'height': height_list,
     'side1': side1_list,
     'side2': side2_list,
-    'side3': side3_list
+    'side3': side3_list,
+    'base_area': base_area_list,
+    'base_edge': base_edge_list
 }
 
 while True:
