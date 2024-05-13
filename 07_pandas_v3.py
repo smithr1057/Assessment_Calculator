@@ -290,142 +290,138 @@ pi = math.pi
 
 # Set up lists
 yn_list = ['yes', 'no']
-dimension_list = ['2d', '3d']
+dimension_list = ['2d', '3d', 'xxx']
 option_list_2d = ['area', 'perimeter', 'both']
 option_list_3d = ['volume', 'surface area', 'both']
 
 
+# Set up lists for answers
+# 2d answers
+area_list = []
+perimeter_list = []
+answer_2d_dict = {
+    'Area': area_list,
+    'Perimeter': perimeter_list
+}
+
+# 3d answers
+volume_list = []
+surface_area_list = []
+answer_3d_dict = {
+    'Volume': volume_list,
+    'Surface Area': surface_area_list
+}
+
+# Create empty lists for 2d parameters
+length_2d_list = []
+radius_2d_list = []
+width_2d_list = []
+side1_2d_list = []
+side2_2d_list = []
+side3_2d_list = []
+
+# Create dict to link 2d parameters to their lists
+parameter_2d_list_dict = {
+    'length': length_2d_list,
+    'radius': radius_2d_list,
+    'width': width_2d_list,
+    'side1': side1_2d_list,
+    'side2': side2_2d_list,
+    'side3': side3_2d_list,
+
+}
+
+# Create empty lists for 3d parameters
+length_3d_list = []
+radius_3d_list = []
+width_3d_list = []
+height_3d_list = []
+side1_3d_list = []
+side2_3d_list = []
+side3_3d_list = []
+base_area_list = []
+base_edge_list = []
+
+# Create dict to link 3d parameters to their lists
+parameter_3d_list_dict = {
+    'length': length_3d_list,
+    'radius': radius_3d_list,
+    'width': width_3d_list,
+    'height': height_3d_list,
+    'side1': side1_3d_list,
+    'side2': side2_3d_list,
+    'side3': side3_3d_list,
+    'base_area': base_area_list,
+    'base_edge': base_edge_list
+}
+
+# Set up a list for 2d shapes
+shape_2d_list = []
+
+# Create the dict used for the 2d panda
+panda_2d_dict = {
+    "Shape": shape_2d_list
+}
+
+# Set up a list for 3d shapes
+shape_3d_list = []
+
+# Create the dict used for the 3d panda
+panda_3d_dict = {
+    "Shape": shape_3d_list
+}
+
 while True:
-    # Set up lists for answers
-    # 2d answers
-    area_list = []
-    perimeter_list = []
-    answer_2d_dict = {
-        'Area': area_list,
-        'Perimeter': perimeter_list
-    }
-
-    # 3d answers
-    volume_list = []
-    surface_area_list = []
-    answer_3d_dict = {
-        'Volume': volume_list,
-        'Surface Area': surface_area_list
-    }
-
-    # Create empty lists for 2d parameters
-    length_2d_list = []
-    radius_2d_list = []
-    width_2d_list = []
-    side1_2d_list = []
-    side2_2d_list = []
-    side3_2d_list = []
-
-    # Create dict to link 2d parameters to their lists
-    parameter_2d_list_dict = {
-        'length': length_2d_list,
-        'radius': radius_2d_list,
-        'width': width_2d_list,
-        'side1': side1_2d_list,
-        'side2': side2_2d_list,
-        'side3': side3_2d_list,
-
-    }
-
-    # Create empty lists for 3d parameters
-    length_3d_list = []
-    radius_3d_list = []
-    width_3d_list = []
-    height_3d_list = []
-    side1_3d_list = []
-    side2_3d_list = []
-    side3_3d_list = []
-    base_area_list = []
-    base_edge_list = []
-
-    # Create dict to link 3d parameters to their lists
-    parameter_3d_list_dict = {
-        'length': length_3d_list,
-        'radius': radius_3d_list,
-        'width': width_3d_list,
-        'height': height_3d_list,
-        'side1': side1_3d_list,
-        'side2': side2_3d_list,
-        'side3': side3_3d_list,
-        'base_area': base_area_list,
-        'base_edge': base_edge_list
-    }
-
-    # Set up a list for 2d shapes
-    shape_2d_list = []
-
-    # Create the dict used for the 2d panda
-    panda_2d_dict = {
-        "Shape": shape_2d_list
-    }
-
-    # Set up a list for 3d shapes
-    shape_3d_list = []
-
-    # Create the dict used for the 3d panda
-    panda_3d_dict = {
-        "Shape": shape_3d_list
-    }
 
     # Ask user to choose between 2d or 3d shapes
-    dimensions = string_checker("2D or 3D shape? ", 1, dimension_list)
+    dimensions = string_checker("2D or 3D shape (or 'xxx' to quit)? ", 1, dimension_list)
+
+    # If user enters 'xxx' quit
+    if dimensions == 'xxx':
+        break
+
+    print()
+    # Asks user for a valid shape as per earlier choice
+    user_shape = get_user_input(dimensions)
+
     print()
 
-    while True:
-        # Asks user for a valid shape as per earlier choice
-        user_shape = get_user_input(dimensions)
-
-        # If user enters 'xxx' quit
-        if user_shape == 'xxx':
-            break
-
+    # Ask if user wants area or perimeter calculated
+    if dimensions == '2d':
         # Add shape to shape_list for panda
-        shape_list.append(user_shape)
+        shape_2d_list.append(user_shape)
 
-        print()
+        whats_calculated = string_checker("Do you want area, perimeter or both calculated? ", 1, option_list_2d)
+    # Ask if user wants volume or surface area calculated
+    else:
+        # Add shape to shape_list for panda
+        shape_2d_list.append(user_shape)
 
-        # Ask if user wants area or perimeter calculated
-        if dimensions == '2d':
-            whats_calculated = string_checker("Do you want area, perimeter or both calculated? ", 1, option_list_2d)
-        # Ask if user wants volume or surface area calculated
-        else:
-            whats_calculated = string_checker('Do you want the volume, surface area or both calculated? ', 1,
-                                              option_list_3d)
+        whats_calculated = string_checker('Do you want the volume, surface area or both calculated? ', 1,
+                                          option_list_3d)
 
-        # Use calc shape func to calculate answer,
-        calc_shape(user_shape, dimensions, whats_calculated)
+    # Use calc shape func to calculate answer,
+    calc_shape(user_shape, dimensions, whats_calculated)
 
     # Add the answers to the panda dictionary
     # If 2d add the 2d answers
-    if :
-        panda_dict.update(answer_2d_dict)
-
+    if dimensions == '2d':
+        panda_2d_dict.update(answer_2d_dict)
 
     # If 3d add the 3d answers
     else:
-        panda_dict.update(answer_3d_dict)
+        panda_3d_dict.update(answer_3d_dict)
 
-    # Print the dictionary used for pandas for testing
-    print(panda_dict)
 
-    # Create the table frame for our data
-    results_frame = pandas.DataFrame(panda_dict)
+if panda_2d_dict
+# Create the table frame for our data
+results_frame = pandas.DataFrame(panda_dict)
 
-    # set index
-    results_frame = results_frame.set_index('Shape')
+# set index
+results_frame = results_frame.set_index('Shape')
 
-    # Print the panda
-    print(results_frame)
+# Print the panda
+print(results_frame)
 
-    # Ask user if they want to use the calculator again
-    use_again = string_checker('Would you like to go again? ', 1, yn_list)
-    # If not then exit the calculator
-    if use_again == 'no':
-        break
 
 print('Bye Bye')
