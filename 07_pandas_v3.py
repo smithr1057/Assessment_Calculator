@@ -32,19 +32,18 @@ def print_valid_shapes(dim, list_of_shapes):
 def get_user_input(var_dimension):
 
     # set up valid shape lists including the word 'shapes'
-    shapes_2d = ['circle', 'square', 'rectangle', 'triangle', 'shapes', 'xxx']
+    shapes_2d = ['circle', 'square', 'rectangle', 'triangle', 'shapes']
     shapes_3d = ['cuboid', 'cylinder', 'triangular prism', 'cone',
-                 'sphere', 'square based pyramid', 'triangle based pyramid', 'shapes', 'xxx']
+                 'sphere', 'square based pyramid', 'triangle based pyramid', 'shapes']
 
     while True:
         # pick the valid shape list for 2d or 3d
         shape_list = shapes_2d if var_dimension == '2d' else shapes_3d
 
         # Ask user for shape if it's not valid then output custom error
-        shape = string_checker(f"Enter the shape you want ('shapes' to see valid options / 'xxx' to quit): ", 0,
+        shape = string_checker(f"Enter the shape you want ('shapes' to see valid options): ", 0,
                                shape_list,
-                               f"Please enter a valid shape, or enter 'shapes' to see the valid options / "
-                               f"'xxx' to quit. ")
+                               f"Please enter a valid shape, or enter 'shapes' to see the valid options.")
 
         if shape == 'shapes':
             # Print out the valid shapes using function
@@ -246,8 +245,11 @@ def calc_shape(shape, dimension, to_calculate):
         # Add the parameter and list into parameter dictionary
         parameter_dict.update({key: dimension_parameter_lists[key]})
 
-    # Add parameters of the shape and their values to the panda_dict
-    panda_dict.update(parameter_dict)
+    # Add parameters of the shape and values to the corresponding panda_dict
+    if dimension == '2d':
+        panda_2d_dict.update(parameter_dict)
+    else:
+        panda_3d_dict.update(parameter_dict)
 
     # If user wants 'area' / 'volume' or 'both' calculated
     if to_calculate == to_calculate_list[0] or to_calculate_list[2]:
@@ -395,7 +397,7 @@ while True:
     # Ask if user wants volume or surface area calculated
     else:
         # Add shape to shape_list for panda
-        shape_2d_list.append(user_shape)
+        shape_3d_list.append(user_shape)
 
         whats_calculated = string_checker('Do you want the volume, surface area or both calculated? ', 1,
                                           option_list_3d)
@@ -412,16 +414,35 @@ while True:
     else:
         panda_3d_dict.update(answer_3d_dict)
 
+# If there is a 2d shape then make and output panda
+if len(shape_2d_list) > 0:
 
-if panda_2d_dict
-# Create the table frame for our data
-results_frame = pandas.DataFrame(panda_dict)
+    # Print panda dictionary for testing
+    print(panda_2d_dict)
 
-# set index
-results_frame = results_frame.set_index('Shape')
+    # Create the table frame for our data
+    results_2d_frame = pandas.DataFrame(panda_2d_dict)
 
-# Print the panda
-print(results_frame)
+    # set index
+    results_2d_frame = results_2d_frame.set_index('Shape')
+
+    # Print the panda
+    print(results_2d_frame)
+
+# If there is a 3d shape then make and output panda
+if len(shape_3d_list) > 0:
+
+    # Print panda dictionary for testing
+    print(panda_2d_dict)
+
+    # Create the table frame for our data
+    results_3d_frame = pandas.DataFrame(panda_3d_dict)
+
+    # set index
+    results_3d_frame = results_3d_frame.set_index('Shape')
+
+    # Print the panda
+    print(results_3d_frame)
 
 
 print('Bye Bye')
