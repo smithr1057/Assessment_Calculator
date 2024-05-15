@@ -417,8 +417,8 @@ while True:
 # If there is a 2d shape then make and output panda
 if len(shape_2d_list) > 0:
 
-    # Print panda dictionary for testing
-    print(panda_2d_dict)
+    print()
+    print(color_text("**** 2D Shapes ****", 'blue'))
 
     # Create the table frame for our data
     results_2d_frame = pandas.DataFrame(panda_2d_dict)
@@ -432,8 +432,8 @@ if len(shape_2d_list) > 0:
 # If there is a 3d shape then make and output panda
 if len(shape_3d_list) > 0:
 
-    # Print panda dictionary for testing
-    print(panda_2d_dict)
+    print()
+    print(color_text("**** 3D Shapes ****", 'blue'))
 
     # Create the table frame for our data
     results_3d_frame = pandas.DataFrame(panda_3d_dict)
@@ -444,5 +444,5 @@ if len(shape_3d_list) > 0:
     # Print the panda
     print(results_3d_frame)
 
-
+print()
 print('Bye Bye')
