@@ -102,7 +102,34 @@ def num_check(question, low=None, high=None):
 
 # Displays instructions
 def instructions():
-    return ''
+    print(color_text("***** Instructions *****", 'blue'))
+    print()
+    print("1. Choose between 2D and 3D shapes:")
+    print("   - Enter '2d' for shapes like circle, square, rectangle, and triangle.")
+    print("   - Enter '3d' for shapes like cuboid, cylinder, triangular prism, cone, sphere, and pyramid.")
+    print("   - Enter 'xxx' to quit the program.")
+    print()
+    print("2. Select the specific shape you want to calculate:")
+    print("   - If you're not sure about the available shapes, enter 'shapes' to see a list of valid options.")
+    print()
+    print("3. Choose the type of calculation you want to perform:")
+    print("   - For 2D shapes, you can calculate the 'area', 'perimeter', or 'both'.")
+    print("   - For 3D shapes, you can calculate the 'volume', 'surface area', or 'both'.")
+    print()
+    print("4. Enter the required dimensions for the chosen shape:")
+    print(
+        "   - The program will prompt you to input the necessary measurements (e.g., radius, length, width, height).")
+    print()
+    print("5. View the results:")
+    print("   - The program will display the calculated area, perimeter, volume, and/or surface area.")
+    print("   - The results will be stored and displayed in a table at the end of your session.")
+    print()
+    print("6. Repeat or exit:")
+    print("   - You can repeat the process for as many shapes as you like.")
+    print("   - When you are done, type 'xxx' to exit the program and see the final summary tables.")
+    print()
+    print(color_text("Enjoy calculating!", 'green'))
+    print()
 
 
 # Prints out the valid shapes from the necessary list
