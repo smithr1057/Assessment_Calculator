@@ -1,4 +1,5 @@
 import math
+import pandas
 # Functions
 
 
@@ -101,14 +102,14 @@ def num_check(question, low=None, high=None):
 
 # Displays instructions
 def instructions():
-    return "*** Instructions ***"
+    return ''
 
 
 # Prints out the valid shapes from the necessary list
-def print_valid_shapes(dim, shape_list):
+def print_valid_shapes(dim, list_of_shapes):
     print()
-    print(f"*** Valid {dim} Shapes ***")
-    print(", ".join(shape_list[:-1]))  # Exclude 'shapes'
+    print(color_text(f"*** Valid {dim} Shapes ***", 'blue'))
+    print(", ".join(list_of_shapes[:-1]))  # Exclude 'shapes'
     print()
 
 
@@ -116,19 +117,18 @@ def print_valid_shapes(dim, shape_list):
 def get_user_input(var_dimension):
 
     # set up valid shape lists including the word 'shapes'
-    shapes_2d = ['circle', 'square', 'rectangle', 'triangle', 'shapes', 'xxx']
+    shapes_2d = ['circle', 'square', 'rectangle', 'triangle', 'shapes']
     shapes_3d = ['cuboid', 'cylinder', 'triangular prism', 'cone',
-                 'sphere', 'square based pyramid', 'triangle based pyramid', 'shapes', 'xxx']
+                 'sphere', 'square based pyramid', 'triangle based pyramid', 'shapes']
 
     while True:
         # pick the valid shape list for 2d or 3d
         shape_list = shapes_2d if var_dimension == '2d' else shapes_3d
 
         # Ask user for shape if it's not valid then output custom error
-        shape = string_checker(f"Enter the shape you want ('shapes' to see valid options / 'xxx' to quit): ", 0,
+        shape = string_checker(f"Enter the shape you want ('shapes' to see valid options): ", 0,
                                shape_list,
-                               f"Please enter a valid shape, or enter 'shapes' to see the valid options / "
-                               f"'xxx' to quit. ")
+                               f"Please enter a valid shape, or enter 'shapes' to see the valid options.")
 
         if shape == 'shapes':
             # Print out the valid shapes using function
@@ -144,20 +144,25 @@ def calc_shape(shape, dimension, to_calculate):
     # Set answer values
     answer_one = answer_two = ''
 
+    # Set up the parameter dictionary
+    parameter_dict = {}
+
     # Set input prompts and shape calculations
     if dimension == '2d':
+
+        dimension_parameter_lists = parameter_2d_list_dict
 
         to_calculate_list = ['area', 'perimeter', 'both']
 
         # Dictionary containing prompts and units for each input
         input_prompts = {
-            'circle': {'radius': ('radius', 'Enter radius of the circle (half the diameter): ', '')},
-            'square': {'length': ('length', 'Enter length of the square: ', '')},
-            'rectangle': {'length': ('length', 'Enter length of the rectangle: ', ''),
-                          'width': ('width', 'Enter width of the rectangle: ', '')},
-            'triangle': {'side1': ('side1', 'Enter the length of one of the sides: ', ''),
-                         'side2': ('side2', 'Enter the length of a different side: ', ''),
-                         'side3': ('side3', 'Enter the length of the last side: ', '')}
+            'circle': {'radius': ('radius', 'Radius: ', '')},
+            'square': {'length': ('length', 'Length: ', '')},
+            'rectangle': {'length': ('length', 'Length: ', ''),
+                          'width': ('width', 'Width: ', '')},
+            'triangle': {'side1': ('side1', 'First side: ', ''),
+                         'side2': ('side2', 'Second side: ', ''),
+                         'side3': ('side3', 'Third side: ', '')}
         }
 
         # Dictionary containing formulas for area and perimeter calculation for each shape
@@ -175,53 +180,42 @@ def calc_shape(shape, dimension, to_calculate):
                 'perimeter': lambda l, w: 2 * (l + w)
             },
             'triangle': {
-                'area': lambda s1, s2, s3: (((s1 + s2 + s3) / 2) *
-                                            (((s1 + s2 + s3) / 2) - s1) *
-                                            (((s1 + s2 + s3) / 2) - s2) *
-                                            (((s1 + s2 + s3) / 2) - s3)) ** 0.5,
+                'area': lambda s1, s2, s3: (((s1 + s2 + s3) / 2) * (((s1 + s2 + s3) / 2) - s1) * (((s1 + s2 + s3) / 2) - s2) * (((s1 + s2 + s3) / 2) - s3)) ** 0.5,
                 'perimeter': lambda s1, s2, s3: s1 + s2 + s3
             }
         }
     else:
 
+        dimension_parameter_lists = parameter_3d_list_dict
+
         to_calculate_list = ['volume', 'surface area', 'both']
 
         # Dictionary mapping shapes to their parameters and prompts
         input_prompts = {
-            'cuboid': {
-                'length': ('length', 'Length: ', '')
-            },
+            'cuboid': {'length': ('length', 'Length: ', '')},
+            'cylinder': {'radius': ('radius', 'Radius: ', ''),
+                         'height': ('height', 'Height: ', '')},
 
-            'cylinder': {
-                'radius': ('radius', 'Radius: ', ''),
-                'height': ('height', 'Height: ', '')
-            },
             'triangular prism': {
-                'side1': ('side1', 'Enter the length of one of the triangles sides: ', ''),
-                'side2': ('side2', 'Enter the length of a different side: ', ''),
-                'side3': ('side3', 'Enter the length of the last side: ', ''),
-                'length': ('length', 'Length: ', '')
-            },
+                'side1': ('side1', 'First side of triangle: ', ''),
+                'side2': ('side2', 'Second side of triangle: ', ''),
+                'side3': ('side3', 'Third side of triangle: ', ''),
+                'length': ('length', 'Length: ', '')},
 
             'cone': {
                 'radius': ('radius', 'Radius: ', ''),
-                'height': ('height', 'Height: ', '')
-            },
+                'height': ('height', 'Height: ', '')},
 
-            'sphere': {
-                'radius': ('radius', 'Radius: ', '')
-            },
+            'sphere': {'radius': ('radius', 'Radius: ', '')},
 
             'square based pyramid': {
                 'width': ('width', 'Width: ', ''),
-                'height': ('height', 'Height: ', '')
-            },
+                'height': ('height', 'Height: ', '')},
 
             'triangle based pyramid': {
                 'height': ('height', 'Height: ', ''),
-                'base_width': ('width', 'Width of the base triangle: ', ''),
-                'apothem': ('apothem', 'Apothem length: ', ''),
-                'sl_height': ('slant', 'Slant_height: ', '')
+                'base_area': ('base_area', 'Area of base triangle: ', ''),
+                'base_edge': ('base_edge', 'Base of one of the faces: ', '')
             }
         }
 
@@ -255,8 +249,8 @@ def calc_shape(shape, dimension, to_calculate):
                 'surface area': lambda w, h: w ** 2 + 2 * w * (w ** 2 / 4 + h ** 2) ** 0.5
             },
             'triangle based pyramid': {
-                'volume': lambda bw, a, h: (1 / 6) * (0.5 * bw * a) * h,
-                'surface area': lambda bw, a, h, sl: (0.5 * bw * sl) + ((3 / 2) * sl)
+                'volume': lambda a, h: 1/3 * a * h,
+                'surface area': lambda b, a, h: a + (3/2) * b * h
             }
         }
 
@@ -270,36 +264,149 @@ def calc_shape(shape, dimension, to_calculate):
         for key, prompt in prompts.items()
     }
 
-    if to_calculate == to_calculate_list[0] or to_calculate_list[2]:
-        # Calculate area based on the chosen shape and user inputs
-        answer_one = shape_calculations[shape][to_calculate_list[0]](*inputs.values())
+    # Set the previously added parameters that aren't used for this shape to N/A
+    for parameter, value_list in dimension_parameter_lists.items():
+        if parameter not in inputs:
+            value_list.append('N/A')
 
+    # Iterate through parameters and values in inputs
+    for key, value in inputs.items():
+        # Add values into the corresponding list using the parameter_list_dict
+        dimension_parameter_lists[key].append(value)
+        # Add the parameter and list into parameter dictionary
+        parameter_dict.update({key: dimension_parameter_lists[key]})
+
+    # Add parameters of the shape and values to the corresponding panda_dict
+    if dimension == '2d':
+        panda_2d_dict.update(parameter_dict)
+    else:
+        panda_3d_dict.update(parameter_dict)
+
+    # If user wants 'area' / 'volume' or 'both' calculated
+    if to_calculate == to_calculate_list[0] or to_calculate_list[2]:
+        # Calculate area / volume based on the chosen shape and user inputs
+        answer_one = shape_calculations[shape][to_calculate_list[0]](*inputs.values())
+        answer_one = round(answer_one, 2)
+
+    # If user wants 'perimeter' / 'surface area' or 'both' calculated
     if to_calculate == to_calculate_list[1] or to_calculate_list[2]:
-        # Calculate perimeter based on the chosen shape and user inputs
+        # Calculate perimeter / surface area based on the chosen shape and user inputs
         answer_two = shape_calculations[shape][to_calculate_list[1]](*inputs.values())
+        answer_two = round(answer_two, 2)
 
     print()
-    if to_calculate == to_calculate_list[0] or to_calculate_list[2]:
-        print(f'{to_calculate_list[0]}: {answer_one:.2f}')
 
+    # If user asked for area / volume or both then print answer one (area / volume)
+    if to_calculate == to_calculate_list[0] or to_calculate_list[2]:
+        print(f'{to_calculate_list[0]}: {answer_one}')
+
+    # If user asked for perimeter / surface area or both then print answer two (perimeter / surface area)
     if to_calculate == to_calculate_list[1] or to_calculate_list[2]:
-        print(f'{to_calculate_list[1]}: {answer_two:.2f}')
+        print(f'{to_calculate_list[1]}: {answer_two}')
+
+    # If a 2d shape then add answer to the 2d shape lists
+    if dimension == '2d':
+        area_list.append(answer_one)
+        perimeter_list.append(answer_two)
+    # If a 3d shape then add answer to the 3d shape lists
+    else:
+        volume_list.append(answer_one)
+        surface_area_list.append(answer_two)
+
     print()
 
 
 # Main Routine
-
-# Set pi value
+# Set pi
 pi = math.pi
 
-# Lists
+
+# Set up lists
 yn_list = ['yes', 'no']
-dimension_list = ['2d', '3d']
-area_perm_list = ['area', 'perimeter', 'both']
-vol_face_list = ['volume', 'surface area', 'both']
+dimension_list = ['2d', '3d', 'xxx']
+option_list_2d = ['area', 'perimeter', 'both']
+option_list_3d = ['volume', 'surface area', 'both']
 
 
-# Dictionaries
+# Set up lists for answers
+# 2d answers
+area_list = []
+perimeter_list = []
+answer_2d_dict = {
+    'Area': area_list,
+    'Perimeter': perimeter_list
+}
+
+# 3d answers
+volume_list = []
+surface_area_list = []
+answer_3d_dict = {
+    'Volume': volume_list,
+    'Surface Area': surface_area_list
+}
+
+# Create empty lists for 2d parameters
+length_2d_list = []
+radius_2d_list = []
+width_2d_list = []
+side1_2d_list = []
+side2_2d_list = []
+side3_2d_list = []
+
+# Create dict to link 2d parameters to their lists
+parameter_2d_list_dict = {
+    'length': length_2d_list,
+    'radius': radius_2d_list,
+    'width': width_2d_list,
+    'side1': side1_2d_list,
+    'side2': side2_2d_list,
+    'side3': side3_2d_list,
+
+}
+
+# Create empty lists for 3d parameters
+length_3d_list = []
+radius_3d_list = []
+width_3d_list = []
+height_3d_list = []
+side1_3d_list = []
+side2_3d_list = []
+side3_3d_list = []
+base_area_list = []
+base_edge_list = []
+
+# Create dict to link 3d parameters to their lists
+parameter_3d_list_dict = {
+    'length': length_3d_list,
+    'radius': radius_3d_list,
+    'width': width_3d_list,
+    'height': height_3d_list,
+    'side1': side1_3d_list,
+    'side2': side2_3d_list,
+    'side3': side3_3d_list,
+    'base_area': base_area_list,
+    'base_edge': base_edge_list
+}
+
+# Set up a list for 2d shapes
+shape_2d_list = []
+
+# Create the dict used for the 2d panda
+panda_2d_dict = {
+    "Shape": shape_2d_list
+}
+
+# Set up a list for 3d shapes
+shape_3d_list = []
+
+# Create the dict used for the 3d panda
+panda_3d_dict = {
+    "Shape": shape_3d_list
+}
+
+print(color_text("<<<<< Welcome to the Super Shape Calculator! >>>>>", 'blue'))
+print("This program helps you calculate the area, perimeter, volume, and surface area of various shapes.")
+print()
 
 # Asks user if they want to read instructions, if yes output instructions
 show_instructions = string_checker("Do you want to read the instructions? ", 1, yn_list)
@@ -309,22 +416,75 @@ if show_instructions == 'yes':
 
 # Loop code until user quits
 while True:
+
     # Ask user to choose between 2d or 3d shapes
-    dimensions = string_checker("2D or 3D shape? ", 1, dimension_list)
+    dimensions = string_checker("2D or 3D shape (or 'xxx' to quit)? ", 1, dimension_list)
 
-    # Asks user for a valid shape as per earlier choice
-    user_shape = get_user_input(dimensions)
-
-    if user_shape == 'xxx':
+    # If user enters 'xxx' quit
+    if dimensions == 'xxx':
         break
 
     print()
+    # Asks user for a valid shape as per earlier choice
+    user_shape = get_user_input(dimensions)
 
+    print()
+
+    # Ask if user wants area or perimeter calculated
     if dimensions == '2d':
-        whats_calculated = string_checker("Do you want area, perimeter or both calculated? ", 1, area_perm_list)
+        # Add shape to shape_list for panda
+        shape_2d_list.append(user_shape)
+
+        whats_calculated = string_checker("Do you want area, perimeter or both calculated? ", 1, option_list_2d)
+    # Ask if user wants volume or surface area calculated
     else:
-        whats_calculated = string_checker('Do you want the volume, surface area or both calculated? ', 1, vol_face_list)
+        # Add shape to shape_list for panda
+        shape_3d_list.append(user_shape)
 
-    answers = calc_shape(user_shape, dimensions, whats_calculated)
+        whats_calculated = string_checker('Do you want the volume, surface area or both calculated? ', 1,
+                                          option_list_3d)
 
+    # Use calc shape func to calculate answer,
+    calc_shape(user_shape, dimensions, whats_calculated)
+
+    # Add the answers to the panda dictionary
+    # If 2d add the 2d answers
+    if dimensions == '2d':
+        panda_2d_dict.update(answer_2d_dict)
+
+    # If 3d add the 3d answers
+    else:
+        panda_3d_dict.update(answer_3d_dict)
+
+    # If there is a 2d shape then make and output panda
+if len(shape_2d_list) > 0:
+
+    print()
+    print(color_text("**** 2D Shapes ****", 'blue'))
+
+    # Create the table frame for our data
+    results_2d_frame = pandas.DataFrame(panda_2d_dict)
+
+    # set index
+    results_2d_frame = results_2d_frame.set_index('Shape')
+
+    # Print the panda
+    print(results_2d_frame)
+
+    # If there is a 3d shape then make and output panda
+if len(shape_3d_list) > 0:
+
+    print()
+    print(color_text("**** 3D Shapes ****", 'blue'))
+
+    # Create the table frame for our data
+    results_3d_frame = pandas.DataFrame(panda_3d_dict)
+
+    # set index
+    results_3d_frame = results_3d_frame.set_index('Shape')
+
+    # Print the panda
+    print(results_3d_frame)
+
+print()
 print(color_text('Thank you for using the Super Shape Calculator', 'green'))
