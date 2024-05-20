@@ -58,15 +58,7 @@ def string_checker(question, num_letters, valid_list, custom_error=None):
 
 
 # checks users enter a float between a low and high number
-def num_check(question, low=None, high=None):
-    # Used ChatGPT to allow the use of the letter 'x' used the prompt bellow
-    # Make that function allow the letter 'x' to be used
-
-    situation = ''
-    if low is not None and high is not None:
-        situation = "both"
-    elif low is not None and high is None:
-        situation = "low only"
+def num_check(question, low=None):
 
     while True:
         try:
@@ -80,23 +72,15 @@ def num_check(question, low=None, high=None):
             # Convert the response to a float
             response = float(response)
 
-            # Checks input is not too high or
-            # too low if both upper and lower bounds are specified
-            if situation == "both":
-                if response < low or response > high:
-                    color_text(f"Please enter a number between {low} and {high}", 'red')
-                    continue
-
             # Checks input is not too low
-            elif situation == "low only":
-                if response <= low:
-                    color_text(f"Please enter a number that is more than {low}", 'red')
-                    continue
+            if response <= low:
+                print(color_text(f"Please enter a number that is more than {low}", 'red'))
+                continue
 
             return response
 
         except ValueError:
-            color_text("Please enter a number", 'red')
+            print(color_text("Please enter a number", 'red'))
             continue
 
 
@@ -155,7 +139,7 @@ def get_user_input(var_dimension):
         # Ask user for shape if it's not valid then output custom error
         shape = string_checker(f"Enter the shape you want ('shapes' to see valid options): ", 0,
                                shape_list,
-                               f"Please enter a valid shape, or enter 'shapes' to see the valid options.")
+                               f"Please enter a valid shape, or 'shapes' to see the valid options.")
 
         if shape == 'shapes':
             # Print out the valid shapes using function
@@ -309,26 +293,22 @@ def calc_shape(shape, dimension, to_calculate):
     else:
         panda_3d_dict.update(parameter_dict)
 
-    # If user wants 'area' / 'volume' or 'both' calculated
-    if to_calculate == to_calculate_list[0] or to_calculate_list[2]:
-        # Calculate area / volume based on the chosen shape and user inputs
-        answer_one = shape_calculations[shape][to_calculate_list[0]](*inputs.values())
-        answer_one = round(answer_one, 2)
+    # Calculate area / volume based on the chosen shape and user inputs
+    answer_one = shape_calculations[shape][to_calculate_list[0]](*inputs.values())
+    answer_one = round(answer_one, 2)
 
-    # If user wants 'perimeter' / 'surface area' or 'both' calculated
-    if to_calculate == to_calculate_list[1] or to_calculate_list[2]:
-        # Calculate perimeter / surface area based on the chosen shape and user inputs
-        answer_two = shape_calculations[shape][to_calculate_list[1]](*inputs.values())
-        answer_two = round(answer_two, 2)
+    # Calculate perimeter / surface area based on the chosen shape and user inputs
+    answer_two = shape_calculations[shape][to_calculate_list[1]](*inputs.values())
+    answer_two = round(answer_two, 2)
 
     print()
 
     # If user asked for area / volume or both then print answer one (area / volume)
-    if to_calculate == to_calculate_list[0] or to_calculate_list[2]:
+    if to_calculate == to_calculate_list[0] or to_calculate == to_calculate_list[2]:
         print(f'{to_calculate_list[0]}: {answer_one}')
 
     # If user asked for perimeter / surface area or both then print answer two (perimeter / surface area)
-    if to_calculate == to_calculate_list[1] or to_calculate_list[2]:
+    if to_calculate == to_calculate_list[1] or to_calculate == to_calculate_list[2]:
         print(f'{to_calculate_list[1]}: {answer_two}')
 
     # If a 2d shape then add answer to the 2d shape lists
@@ -348,7 +328,7 @@ def calc_shape(shape, dimension, to_calculate):
 pi = math.pi
 
 
-# Set up lists
+# Set up lists for string checker
 yn_list = ['yes', 'no']
 dimension_list = ['2d', '3d', 'xxx']
 option_list_2d = ['area', 'perimeter', 'both']
