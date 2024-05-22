@@ -120,7 +120,7 @@ def instructions():
 def print_valid_shapes(dim, list_of_shapes):
     print()
     print(color_text(f"*** Valid {dim} Shapes ***", 'blue'))
-    print(", ".join(list_of_shapes[:-1]))  # Exclude 'shapes'
+    print(", ".join(list_of_shapes[:-1]) + ' (only regular tetrahedron)')  # Exclude 'shapes'
     print()
 
 
@@ -129,7 +129,7 @@ def get_user_input(var_dimension):
 
     # set up valid shape lists including the word 'shapes'
     shapes_2d = ['circle', 'square', 'rectangle', 'triangle', 'shapes']
-    shapes_3d = ['cuboid', 'cylinder', 'triangular prism', 'cone',
+    shapes_3d = ['cuboid', 'cube', 'cylinder', 'triangular prism', 'cone',
                  'sphere', 'square based pyramid', 'triangle based pyramid', 'shapes']
 
     while True:
@@ -194,7 +194,6 @@ def calc_shape(shape, dimension, to_calculate):
                 'perimeter': lambda l, w: 2 * (l + w)
             },
             'triangle': {
-                #
                 'area': lambda s1, s2, s3: herons_formula(s1, s2, s3),  # Uses heron's function to calculate area
                 'perimeter': lambda s1, s2, s3: s1 + s2 + s3
             }
@@ -207,7 +206,10 @@ def calc_shape(shape, dimension, to_calculate):
 
         # Dictionary mapping shapes to their parameters and prompts
         input_prompts = {
-            'cuboid': {'length': ('length', 'Length: ', '')},
+            'cuboid': {'length': ('length', 'Length: ', ''),
+                       'width': ('width', 'Width: ', ''),
+                       'height': ('height', 'Height: ', '')},
+
             'cylinder': {'radius': ('radius', 'Radius: ', ''),
                          'height': ('height', 'Height: ', '')},
 
@@ -230,15 +232,18 @@ def calc_shape(shape, dimension, to_calculate):
             'triangle based pyramid': {
                 'height': ('height', 'Height: ', ''),
                 'base_area': ('base_area', 'Area of base triangle: ', ''),
-                'base_edge': ('base_edge', 'Base of one of the faces: ', '')
-            }
+                'base_edge': ('base_edge', 'Base of one of the faces: ', '')}
         }
 
         # Dictionary mapping shapes to their formulas for volume and surface area
         shape_calculations = {
             'cuboid': {
+                'volume': lambda l, w, h: l * w * h,
+                'surface area': lambda l, w, h: 2 * (l * w + l * h + w * h)
+            },
+            'cube': {
                 'volume': lambda l: l ** 3,
-                'surface area': lambda l: 2 * (l * l + l * l + l * l)
+                'surface area': lambda l: 6 * l ** 2
             },
             'cylinder': {
                 'volume': lambda r, h: pi * r ** 2 * h,
@@ -251,19 +256,20 @@ def calc_shape(shape, dimension, to_calculate):
                 },
             'cone': {
                 'volume': lambda r, h: 1 / 3 * pi * r ** 2 * h,
-                'surface area': lambda r, h: pi * r * (r + (h ** 2 + r ** 2) ** 0.5)
+                'surface area': lambda r, h: pi * r * (r + math.sqrt(h ** 2 + r ** 2))
             },
             'sphere': {
                 'volume': lambda r: 4 / 3 * pi * r ** 3,
                 'surface area': lambda r: 4 * pi * r ** 2
             },
-            'square based pyramid': {
+            'square_based_pyramid': {
                 'volume': lambda w, h: w ** 2 * h / 3,
-                'surface area': lambda w, h: w ** 2 + 2 * w * (w ** 2 / 4 + h ** 2) ** 0.5
+                'surface area': lambda w, h: w ** 2 + w * math.sqrt((w / 2) ** 2 + h ** 2) * 2
             },
-            'triangle based pyramid': {
-                'volume': lambda a, h: 1/3 * a * h,
-                'surface area': lambda b, a, h: a + (3/2) * b * h
+            'triangle_based_pyramid': {
+                'volume': lambda a, h: 1 / 3 * a * h,
+                'surface area': lambda a, b, c, h: a + b + c + (math.sqrt(h ** 2 + (a / 2) ** 2) * 3)
+                # regular tetrahedron
             }
         }
 
