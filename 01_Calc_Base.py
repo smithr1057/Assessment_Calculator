@@ -148,12 +148,15 @@ def get_user_input(var_dimension):
             return shape
 
 
+def herons_formula(a, b, c):
+    # Calculate area of triangle with heron's formula
+    s = (a + b + c) / 2  # semi perimeter
+    return math.sqrt(s * (s - a) * (s - b) * (s - c))
+
+
 # Calculates shapes area and perimeter /
 # volume and surface area and prints out the answer
 def calc_shape(shape, dimension, to_calculate):
-
-    # Set answer values
-    answer_one = answer_two = ''
 
     # Set up the parameter dictionary
     parameter_dict = {}
@@ -191,7 +194,8 @@ def calc_shape(shape, dimension, to_calculate):
                 'perimeter': lambda l, w: 2 * (l + w)
             },
             'triangle': {
-                'area': lambda s1, s2, s3: (((s1 + s2 + s3) / 2) * (((s1 + s2 + s3) / 2) - s1) * (((s1 + s2 + s3) / 2) - s2) * (((s1 + s2 + s3) / 2) - s3)) ** 0.5,
+                #
+                'area': lambda s1, s2, s3: herons_formula(s1, s2, s3),  # Uses heron's function to calculate area
                 'perimeter': lambda s1, s2, s3: s1 + s2 + s3
             }
         }
@@ -240,13 +244,11 @@ def calc_shape(shape, dimension, to_calculate):
                 'volume': lambda r, h: pi * r ** 2 * h,
                 'surface area': lambda r, h: 2 * pi * r * h + 2 * pi * r ** 2
             },
-            'triangular prism': {
-                'volume': lambda a, b, c, l: 1 / 4 * l * ((a + b + c) * (b + c - a) * (c + a - b) * (a + b - c)) ** 0.5,
-                'surface area': lambda a, b, c, l: l * (a + b + c) + 1 / 4 * (
-                            (a + b + c) * (b + c - a) * (c + a - b) * (a + b - c)) ** 0.5 + 1 / 4 * (
-                                                               (a + b + c) * (b + c - a) * (c + a - b) * (
-                                                                   a + b - c)) ** 0.5
-            },
+            'triangular_prism': {
+                # Uses heron's function to help calculate
+                'volume': lambda a, b, c, l: herons_formula(a, b, c) * l,
+                'surface area': lambda a, b, c, l: 2 * herons_formula(a, b, c) + (a + b + c) * l
+                },
             'cone': {
                 'volume': lambda r, h: 1 / 3 * pi * r ** 2 * h,
                 'surface area': lambda r, h: pi * r * (r + (h ** 2 + r ** 2) ** 0.5)
