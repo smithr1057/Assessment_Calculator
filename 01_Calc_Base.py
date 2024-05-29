@@ -21,7 +21,7 @@ def color_text(text, color):
     }
 
     # Prints text in specified color
-    return f"{colors[color]}{text}\033[0m"
+    print(f"{colors[color]}{text}\033[0m")
 
 
 # checks user answers with valid answer
@@ -53,7 +53,7 @@ def string_checker(question, num_letters, valid_list, custom_error=None):
                     return i
 
         # output error if item not in list
-        print(color_text(error, 'red'))
+        color_text(error, 'red')
         print()
 
 
@@ -74,19 +74,19 @@ def num_check(question, low=None):
 
             # Checks input is not too low
             if response <= low:
-                print(color_text(f"Please enter a number that is more than {low}", 'red'))
+                color_text(f"Please enter a number that is more than {low}", 'red')
                 continue
 
             return response
 
         except ValueError:
-            print(color_text("Please enter a number", 'red'))
+            color_text("Please enter a number", 'red')
             continue
 
 
 # Displays instructions
 def instructions():
-    print(color_text("***** Instructions *****", 'blue'))
+    color_text("***** Instructions *****", 'blue')
     print()
     print("1. Choose between 2D and 3D shapes:")
     print("   - Enter '2d' for shapes like circle, square, rectangle, and triangle.")
@@ -112,38 +112,38 @@ def instructions():
     print("   - You can repeat the process for as many shapes as you like.")
     print("   - When you are done, type 'xxx' to exit the program and see the final summary tables.")
     print()
-    print(color_text("Enjoy calculating!", 'green'))
-    print()
+    color_text("Enjoy calculating!", 'green')
 
 
 # Prints out the valid shapes from the necessary list
 def print_valid_shapes(dim, list_of_shapes):
     print()
-    print(color_text(f"*** Valid {dim} Shapes ***", 'blue'))
-    print(", ".join(list_of_shapes[:-1]) + ' (only regular tetrahedron)')  # Exclude 'shapes'
+    color_text(f"*** Valid {dim} Shapes ***", 'blue')
+    if dim == '3D':
+        print(", ".join(list_of_shapes) + ' (only regular tetrahedron)')
+    else:
+        print(", ".join(list_of_shapes))
     print()
 
 
 # Asks user for the shape they want and returns it
-def get_user_input(var_dimension):
-
-    # set up valid shape lists including the word 'shapes'
-    shapes_2d = ['circle', 'square', 'rectangle', 'triangle', 'shapes']
-    shapes_3d = ['cuboid', 'cube', 'cylinder', 'triangular prism', 'cone',
-                 'sphere', 'square based pyramid', 'triangle based pyramid', 'shapes']
+def get_user_input():
+    # valid shapes
+    shape_list = ['circle', 'square', 'rectangle', 'triangle', 'cuboid', 'cube', 'cylinder', 'triangular prism',
+                  'cone', 'sphere', 'square based pyramid', 'triangle based pyramid', 'shapes']
 
     while True:
-        # pick the valid shape list for 2d or 3d
-        shape_list = shapes_2d if var_dimension == '2d' else shapes_3d
 
         # Ask user for shape if it's not valid then output custom error
-        shape = string_checker(f"Enter the shape you want ('shapes' to see valid options): ", 0,
-                               shape_list,
-                               f"Please enter a valid shape, or 'shapes' to see the valid options.")
+        shape = string_checker(f"Enter a shape ('shapes' for valid options, 'xxx' to quit): ", 0,
+                               shape_list + ['xxx'],
+                               f"Please enter a valid shape, 'shapes' to see the valid options, or 'xxx' to quit.")
 
         if shape == 'shapes':
             # Print out the valid shapes using function
-            print_valid_shapes(var_dimension, shapes_2d if var_dimension == '2d' else shapes_3d)
+            print_valid_shapes('2D', shapes_2d)
+            print_valid_shapes('3D', shapes_3d)
+
         else:
             return shape
 
@@ -249,7 +249,7 @@ def calc_shape(shape, dimension, to_calculate):
                 'volume': lambda r, h: pi * r ** 2 * h,
                 'surface area': lambda r, h: 2 * pi * r * h + 2 * pi * r ** 2
             },
-            'triangular_prism': {
+            'triangular prism': {
                 # Uses heron's function to help calculate
                 'volume': lambda a, b, c, l: herons_formula(a, b, c) * l,
                 'surface area': lambda a, b, c, l: 2 * herons_formula(a, b, c) + (a + b + c) * l
@@ -342,6 +342,10 @@ dimension_list = ['2d', '3d', 'xxx']
 option_list_2d = ['area', 'perimeter', 'both']
 option_list_3d = ['volume', 'surface area', 'both']
 
+# set up valid shape lists including the word 'shapes'
+shapes_2d = ['circle', 'square', 'rectangle', 'triangle']
+shapes_3d = ['cuboid', 'cube', 'cylinder', 'triangular prism', 'cone',
+             'sphere', 'square based pyramid', 'triangle based pyramid']
 
 # Set up lists for answers
 # 2d answers
@@ -403,7 +407,7 @@ parameter_3d_list_dict = {
     'base_edge': base_edge_list
 }
 
-# Set up a list for 2d shapes
+# Set up a list for 2d shapes used
 shape_2d_list = []
 
 # Create the dict used for the 2d panda
@@ -411,7 +415,7 @@ panda_2d_dict = {
     "Shape": shape_2d_list
 }
 
-# Set up a list for 3d shapes
+# Set up a list for 3d shapes used
 shape_3d_list = []
 
 # Create the dict used for the 3d panda
@@ -419,7 +423,7 @@ panda_3d_dict = {
     "Shape": shape_3d_list
 }
 
-print(color_text("<<<<< Welcome to the Super Shape Calculator! >>>>>", 'blue'))
+color_text("<<<<< Welcome to the Super Shape Calculator! >>>>>", 'blue')
 print("This program helps you calculate the area, perimeter, volume, and surface area of various shapes.")
 print()
 
@@ -428,20 +432,23 @@ show_instructions = string_checker("Do you want to read the instructions? ", 1, 
 
 if show_instructions == 'yes':
     instructions()
+print()
 
 # Loop code until user quits
 while True:
 
-    # Ask user to choose between 2d or 3d shapes
-    dimensions = string_checker("2D or 3D shape (or 'xxx' to quit)? ", 1, dimension_list)
+    # Asks user for a valid shape as per earlier choice
+    user_shape = get_user_input()
 
     # If user enters 'xxx' quit
-    if dimensions == 'xxx':
+    if user_shape == 'xxx':
         break
 
-    print()
-    # Asks user for a valid shape as per earlier choice
-    user_shape = get_user_input(dimensions)
+    # Find out what dimension shape it is
+    if user_shape in shapes_2d:
+        dimensions = '2d'
+    else:
+        dimensions = '3d'
 
     print()
 
@@ -475,7 +482,7 @@ while True:
 if len(shape_2d_list) > 0:
 
     print()
-    print(color_text("**** 2D Shapes ****", 'blue'))
+    color_text("**** 2D Shapes ****", 'blue')
 
     # Create the table frame for our data
     results_2d_frame = pandas.DataFrame(panda_2d_dict)
@@ -490,7 +497,7 @@ if len(shape_2d_list) > 0:
 if len(shape_3d_list) > 0:
 
     print()
-    print(color_text("**** 3D Shapes ****", 'blue'))
+    color_text("**** 3D Shapes ****", 'blue')
 
     # Create the table frame for our data
     results_3d_frame = pandas.DataFrame(panda_3d_dict)
@@ -502,4 +509,4 @@ if len(shape_3d_list) > 0:
     print(results_3d_frame)
 
 print()
-print(color_text('Thank you for using the Super Shape Calculator', 'green'))
+color_text('Thank you for using the Super Shape Calculator', 'green')
