@@ -86,33 +86,33 @@ def num_check(question, low=None):
 
 # Displays instructions
 def instructions():
-    color_text("***** Instructions *****", 'blue')
-    print()
-    print("1. Choose between 2D and 3D shapes:")
-    print("   - Enter '2d' for shapes like circle, square, rectangle, and triangle.")
-    print("   - Enter '3d' for shapes like cuboid, cylinder, triangular prism, cone, sphere, and pyramid.")
-    print("   - Enter 'xxx' to quit the program.")
-    print()
-    print("2. Select the specific shape you want to calculate:")
-    print("   - If you're not sure about the available shapes, enter 'shapes' to see a list of valid options.")
-    print()
-    print("3. Choose the type of calculation you want to perform:")
-    print("   - For 2D shapes, you can calculate the 'area', 'perimeter', or 'both'.")
-    print("   - For 3D shapes, you can calculate the 'volume', 'surface area', or 'both'.")
-    print()
-    print("4. Enter the required dimensions for the chosen shape:")
-    print(
-        "   - The program will prompt you to input the necessary measurements (e.g., radius, length, width, height).")
-    print()
-    print("5. View the results:")
-    print("   - The program will display the calculated area, perimeter, volume, and/or surface area.")
-    print("   - The results will be stored and displayed in a table at the end of your session.")
-    print()
-    print("6. Repeat or exit:")
-    print("   - You can repeat the process for as many shapes as you like.")
-    print("   - When you are done, type 'xxx' to exit the program and see the final summary tables.")
-    print()
-    color_text("Enjoy calculating!", 'green')
+    color_text("***** Instructions *****", 'green')
+    print("""
+This Super Shape Calculator helps you calculate various properties of 2D and 3D shapes.
+
+Here's how to use it:
+
+1. **Choose Shape**: 
+   - When prompted, enter the shape you want to calculate properties for. 
+   - Type 'shapes' to see the list of valid shape options or 'xxx' to quit the program.
+   - The program will automatically determine whether your shape is 2D or 3D.
+
+2. **Choose Calculation**:
+   - For 2D shapes, you can choose to calculate the area, perimeter, or both.
+   - For 3D shapes, you can choose to calculate the volume, surface area, or both.
+
+3. **Enter Dimensions**:
+   - The program will prompt you to enter the necessary dimensions for the chosen shape (e.g., radius for a circle, length and width for a rectangle).
+
+4. **View Results**:
+   - The program will display the calculated properties (area, perimeter, volume, or surface area) of the shape.
+   - At the end of the session, the program will display a summary table of all shapes and their calculated properties.
+
+5. **Quit the Program**:
+   - To exit the program, type 'xxx' when prompted for a shape.
+
+Enjoy using the Super Shape Calculator!
+""")
 
 
 # Prints out the valid shapes from the necessary list
@@ -424,7 +424,6 @@ panda_3d_dict = {
 }
 
 color_text("<<<<< Welcome to the Super Shape Calculator! >>>>>", 'blue')
-print("This program helps you calculate the area, perimeter, volume, and surface area of various shapes.")
 print()
 
 # Asks user if they want to read instructions, if yes output instructions
@@ -432,7 +431,7 @@ show_instructions = string_checker("Do you want to read the instructions? ", 1, 
 
 if show_instructions == 'yes':
     instructions()
-print()
+
 
 # Loop code until user quits
 while True:
