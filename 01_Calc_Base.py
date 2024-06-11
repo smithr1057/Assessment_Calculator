@@ -21,7 +21,7 @@ def color_text(text, color):
     }
 
     # Prints text in specified color
-    print(f"{colors[color]}{text}\033[0m")
+    return f"{colors[color]}{text}\033[0m"
 
 
 # checks user answers with valid answer
@@ -53,7 +53,7 @@ def string_checker(question, num_letters, valid_list, custom_error=None):
                     return i
 
         # output error if item not in list
-        color_text(error, 'red')
+        print(color_text(error, 'red'))
         print()
 
 
@@ -74,19 +74,19 @@ def num_check(question, low=None):
 
             # Checks input is not too low
             if response <= low:
-                color_text(f"Please enter a number that is more than {low}", 'red')
+                print(color_text(f"Please enter a number that is more than {low}", 'red'))
                 continue
 
             return response
 
         except ValueError:
-            color_text("Please enter a number", 'red')
+            print(color_text("Please enter a number", 'red'))
             continue
 
 
 # Displays instructions
 def instructions():
-    color_text("***** Instructions *****", 'green')
+    print(color_text("***** Instructions *****", 'green'))
     print("""
 This Super Shape Calculator helps you calculate various properties of 2D and 3D shapes.
 
@@ -107,6 +107,7 @@ Here's how to use it:
 4. **View Results**:
    - The program will display the calculated properties (area, perimeter, volume, or surface area) of the shape.
    - At the end of the session, the program will display a summary table of all shapes and their calculated properties.
+   - You will also have the option to save the results to a file.
 
 5. **Quit the Program**:
    - To exit the program, type 'xxx' when prompted for a shape.
@@ -118,7 +119,7 @@ Enjoy using the Super Shape Calculator!
 # Prints out the valid shapes from the necessary list
 def print_valid_shapes(dim, list_of_shapes):
     print()
-    color_text(f"*** Valid {dim} Shapes ***", 'blue')
+    print(color_text(f"*** Valid {dim} Shapes ***", 'blue'))
     if dim == '3D':
         print(", ".join(list_of_shapes) + ' (only regular tetrahedron)')
     else:
@@ -179,7 +180,7 @@ def calc_shape(shape, dimension, to_calculate):
                          'side3': ('side3', 'Third side: ', '')}
         }
 
-        # Dictionary containing formulas for area and perimeter calculation for each shape
+        # Dictionary containing formulas for area and perimeter for each shape
         shape_calculations = {
             'circle': {
                 'area': lambda r: pi * r ** 2,
@@ -230,12 +231,13 @@ def calc_shape(shape, dimension, to_calculate):
                 'height': ('height', 'Height: ', '')},
 
             'triangle based pyramid': {
-                'height': ('height', 'Height: ', ''),
-                'base_area': ('base_area', 'Area of base triangle: ', ''),
-                'base_edge': ('base_edge', 'Base of one of the faces: ', '')}
+                'side1': ('side1', 'First side of triangle: ', ''),
+                'side2': ('side2', 'Second side of triangle: ', ''),
+                'side3': ('side3', 'Third side of triangle: ', ''),
+                'height': ('height', 'Height: ', '')},
         }
 
-        # Dictionary mapping shapes to their formulas for volume and surface area
+        # Dictionary containing formulas for volume and surface area for each shape
         shape_calculations = {
             'cuboid': {
                 'volume': lambda l, w, h: l * w * h,
@@ -262,12 +264,12 @@ def calc_shape(shape, dimension, to_calculate):
                 'volume': lambda r: 4 / 3 * pi * r ** 3,
                 'surface area': lambda r: 4 * pi * r ** 2
             },
-            'square_based_pyramid': {
+            'square based pyramid': {
                 'volume': lambda w, h: w ** 2 * h / 3,
                 'surface area': lambda w, h: w ** 2 + w * math.sqrt((w / 2) ** 2 + h ** 2) * 2
             },
-            'triangle_based_pyramid': {
-                'volume': lambda a, h: 1 / 3 * a * h,
+            'triangle based pyramid': {
+                'volume': lambda a, b, c, h: 1 / 3 * herons_formula(a, b, c) * h,
                 'surface area': lambda a, b, c, h: a + b + c + (math.sqrt(h ** 2 + (a / 2) ** 2) * 3)
                 # regular tetrahedron
             }
@@ -278,10 +280,19 @@ def calc_shape(shape, dimension, to_calculate):
 
     # Create dictionary for user inputs needed for calculation
     inputs = {
-        # Get user input for each parameter then iterate over parameter and prompt
-        key: num_check(prompt[1], 0)
-        for key, prompt in prompts.items()
+        # Get user input for each parameter using prompts
+        key: num_check(prompt[1], 0) for key, prompt in prompts.items()
     }
+
+    # Check for impossible triangles
+    if shape in ['triangle', 'triangle based pyramid', 'triangular prism']:
+        # If the triangle is impossible output error and reset
+        if not (inputs['side1'] + inputs['side2'] > inputs['side3'] and
+                inputs['side1'] + inputs['side3'] > inputs['side2'] and
+                inputs['side2'] + inputs['side3'] > inputs['side1']):
+            print(color_text("The sides entered do not form a valid triangle.", 'red'))
+            print()
+            return
 
     # Set the previously added parameters that aren't used for this shape to N/A
     for parameter, value_list in dimension_parameter_lists.items():
@@ -298,8 +309,12 @@ def calc_shape(shape, dimension, to_calculate):
     # Add parameters of the shape and values to the corresponding panda_dict
     if dimension == '2d':
         panda_2d_dict.update(parameter_dict)
+        # Add shape to shape_list for panda
+        shape_2d_list.append(user_shape)
     else:
         panda_3d_dict.update(parameter_dict)
+        # Add shape to shape_list for panda
+        shape_3d_list.append(user_shape)
 
     # Calculate area / volume based on the chosen shape and user inputs
     answer_one = shape_calculations[shape][to_calculate_list[0]](*inputs.values())
@@ -423,7 +438,10 @@ panda_3d_dict = {
     "Shape": shape_3d_list
 }
 
-color_text("<<<<< Welcome to the Super Shape Calculator! >>>>>", 'blue')
+# list of items to write to file
+to_write = []
+
+print(color_text("<<<<< Welcome to the Super Shape Calculator! >>>>>", 'blue'))
 print()
 
 # Asks user if they want to read instructions, if yes output instructions
@@ -453,15 +471,9 @@ while True:
 
     # Ask if user wants area or perimeter calculated
     if dimensions == '2d':
-        # Add shape to shape_list for panda
-        shape_2d_list.append(user_shape)
-
         whats_calculated = string_checker("Do you want area, perimeter or both calculated? ", 1, option_list_2d)
     # Ask if user wants volume or surface area calculated
     else:
-        # Add shape to shape_list for panda
-        shape_3d_list.append(user_shape)
-
         whats_calculated = string_checker('Do you want the volume, surface area or both calculated? ', 1,
                                           option_list_3d)
 
@@ -477,11 +489,11 @@ while True:
     else:
         panda_3d_dict.update(answer_3d_dict)
 
-    # If there is a 2d shape then make and output panda
-if len(shape_2d_list) > 0:
 
+# If there is a 2d shape then make and set data
+if len(shape_2d_list) > 0:
     print()
-    color_text("**** 2D Shapes ****", 'blue')
+    subtitle_2d = "**** 2D Shapes ****\n"
 
     # Create the table frame for our data
     results_2d_frame = pandas.DataFrame(panda_2d_dict)
@@ -489,14 +501,21 @@ if len(shape_2d_list) > 0:
     # set index
     results_2d_frame = results_2d_frame.set_index('Shape')
 
-    # Print the panda
-    print(results_2d_frame)
+    # convert dataframe to string
+    table_2d = pandas.DataFrame.to_string(results_2d_frame)
 
-    # If there is a 3d shape then make and output panda
+    # Add to list to write to file
+    to_write.append(subtitle_2d)
+    to_write.append(table_2d)
+
+    # Print out the data
+    color_text(subtitle_2d, "blue")
+    print(table_2d)
+
+# If there is a 3d shape then make and set data
 if len(shape_3d_list) > 0:
-
     print()
-    color_text("**** 3D Shapes ****", 'blue')
+    subtitle_3d = "**** 3D Shapes ****\n"
 
     # Create the table frame for our data
     results_3d_frame = pandas.DataFrame(panda_3d_dict)
@@ -504,8 +523,28 @@ if len(shape_3d_list) > 0:
     # set index
     results_3d_frame = results_3d_frame.set_index('Shape')
 
-    # Print the panda
-    print(results_3d_frame)
+    # convert dataframe to string
+    table_3d = pandas.DataFrame.to_string(results_3d_frame)
+
+    # Add to list to write to file
+    to_write.append(subtitle_3d)
+    to_write.append(table_3d)
+
+    # print out the data
+    color_text(subtitle_3d, "blue")
+    print(table_3d)
+
+# Ask if user wants to save data to file
+write_to_file = string_checker("Do you want to save the data: ", 1, yn_list)
+
+if write_to_file == 'yes':
+
+    # Ask for file name
+    file_name = input("File name: ")
+
+    title = f"*** {file_name} ***\n\n"
+
+    to_write.insert(0, title)
 
 print()
-color_text('Thank you for using the Super Shape Calculator', 'green')
+print(color_text('Thank you for using the Super Shape Calculator', 'green'))
