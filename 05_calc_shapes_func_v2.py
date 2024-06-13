@@ -46,20 +46,28 @@ def calc_shape(shape, dimension, to_calculate):
     # Set up the parameter dictionary
     parameter_dict = {}
 
+    # Common prompts
+    prompt_dict = {
+        'radius': ('radius', 'Radius: ', ''),
+        'length': ('length', 'Length: ', ''),
+        'width': ('width', 'Width: ', ''),
+        'height': ('height', 'Height: ', ''),
+        'side1': ('side1', 'First side: ', ''),
+        'side2': ('side2', 'Second side: ', ''),
+        'side3': ('side3', 'Third side: ', '')
+    }
+
     # Set input prompts and shape calculations
     if dimension == '2d':
 
         to_calculate_list = ['area', 'perimeter', 'both']
 
-        # Dictionary containing prompts and units for each input
+        # Dictionary linking shape to its prompt
         input_prompts = {
-            'circle': {'radius': ('radius', 'Radius: ', '')},
-            'square': {'length': ('length', 'Length: ', '')},
-            'rectangle': {'length': ('length', 'Length: ', ''),
-                          'width': ('width', 'Width: ', '')},
-            'triangle': {'side1': ('side1', 'First side: ', ''),
-                         'side2': ('side2', 'Second side: ', ''),
-                         'side3': ('side3', 'Third side: ', '')}
+            'circle': ['radius'],
+            'square': ['length'],
+            'rectangle': ['length', 'width'],
+            'triangle': ['side1', 'side2', 'side3']
         }
 
         # Dictionary containing formulas for area and perimeter for each shape
@@ -87,38 +95,16 @@ def calc_shape(shape, dimension, to_calculate):
 
         # ********* MORE EFFICIENT DICTIONARIES REPEATED CODE ******************
 
-        # Dictionary mapping shapes to their parameters and prompts
+        # Dictionary linking shape to its prompt
         input_prompts = {
-            'cuboid': {'length': ('length', 'Length: ', ''),
-                       'width': ('width', 'Width: ', ''),
-                       'height': ('height', 'Height: ', '')},
-
-            'cube': {'length': ('length', 'Length: ', '')},
-
-            'cylinder': {'radius': ('radius', 'Radius: ', ''),
-                         'height': ('height', 'Height: ', '')},
-
-            'triangular prism': {
-                'side1': ('side1', 'First side of triangle: ', ''),
-                'side2': ('side2', 'Second side of triangle: ', ''),
-                'side3': ('side3', 'Third side of triangle: ', ''),
-                'length': ('length', 'Length: ', '')},
-
-            'cone': {
-                'radius': ('radius', 'Radius: ', ''),
-                'height': ('height', 'Height: ', '')},
-
-            'sphere': {'radius': ('radius', 'Radius: ', '')},
-
-            'square based pyramid': {
-                'width': ('width', 'Width: ', ''),
-                'height': ('height', 'Height: ', '')},
-
-            'triangle based pyramid': {
-                'side1': ('side1', 'First side of triangle: ', ''),
-                'side2': ('side2', 'Second side of triangle: ', ''),
-                'side3': ('side3', 'Third side of triangle: ', ''),
-                'height': ('height', 'Height: ', '')},
+            'cuboid': ['length', 'width', 'height'],
+            'cube': ['length'],
+            'cylinder': ['radius', 'height'],
+            'triangular prism': ['side1', 'side2', 'side3', 'length'],
+            'cone': ['radius', 'height'],
+            'sphere': ['radius'],
+            'square based pyramid': ['width', 'height'],
+            'triangle based pyramid': ['side1', 'side2', 'side3', 'height']
         }
 
         # Dictionary containing formulas for volume and surface area for each shape
@@ -160,7 +146,7 @@ def calc_shape(shape, dimension, to_calculate):
         }
 
     # Retrieve prompts for user inputs associated with the chosen shape
-    prompts = input_prompts[shape]
+    prompts = {key: prompt_dict[key] for key in input_prompts[shape]}
 
     # Create dictionary for user inputs needed for calculation
     inputs = {
@@ -197,6 +183,7 @@ def calc_shape(shape, dimension, to_calculate):
         print(f'{to_calculate_list[1]}: {answer_two}')
 
     print()
+
 
 # Main Routine
 calc_shape('square', '2d', 'both')
