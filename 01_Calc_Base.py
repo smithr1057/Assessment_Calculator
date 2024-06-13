@@ -162,6 +162,17 @@ def calc_shape(shape, dimension, to_calculate):
     # Set up the parameter dictionary
     parameter_dict = {}
 
+    # Common prompts
+    prompt_dict = {
+        'radius': ('radius', 'Radius: ', ''),
+        'length': ('length', 'Length: ', ''),
+        'width': ('width', 'Width: ', ''),
+        'height': ('height', 'Height: ', ''),
+        'side1': ('side1', 'First side: ', ''),
+        'side2': ('side2', 'Second side: ', ''),
+        'side3': ('side3', 'Third side: ', '')
+    }
+
     # Set input prompts and shape calculations
     if dimension == '2d':
 
@@ -169,15 +180,12 @@ def calc_shape(shape, dimension, to_calculate):
 
         to_calculate_list = ['area', 'perimeter', 'both']
 
-        # Dictionary containing prompts and units for each input
+        # Dictionary linking shape to its prompt
         input_prompts = {
-            'circle': {'radius': ('radius', 'Radius: ', '')},
-            'square': {'length': ('length', 'Length: ', '')},
-            'rectangle': {'length': ('length', 'Length: ', ''),
-                          'width': ('width', 'Width: ', '')},
-            'triangle': {'side1': ('side1', 'First side: ', ''),
-                         'side2': ('side2', 'Second side: ', ''),
-                         'side3': ('side3', 'Third side: ', '')}
+            'circle': ['radius'],
+            'square': ['length'],
+            'rectangle': ['length', 'width'],
+            'triangle': ['side1', 'side2', 'side3']
         }
 
         # Dictionary containing formulas for area and perimeter for each shape
@@ -205,36 +213,16 @@ def calc_shape(shape, dimension, to_calculate):
 
         to_calculate_list = ['volume', 'surface area', 'both']
 
-        # Dictionary mapping shapes to their parameters and prompts
+        # Dictionary linking shape to its prompt
         input_prompts = {
-            'cuboid': {'length': ('length', 'Length: ', ''),
-                       'width': ('width', 'Width: ', ''),
-                       'height': ('height', 'Height: ', '')},
-
-            'cylinder': {'radius': ('radius', 'Radius: ', ''),
-                         'height': ('height', 'Height: ', '')},
-
-            'triangular prism': {
-                'side1': ('side1', 'First side of triangle: ', ''),
-                'side2': ('side2', 'Second side of triangle: ', ''),
-                'side3': ('side3', 'Third side of triangle: ', ''),
-                'length': ('length', 'Length: ', '')},
-
-            'cone': {
-                'radius': ('radius', 'Radius: ', ''),
-                'height': ('height', 'Height: ', '')},
-
-            'sphere': {'radius': ('radius', 'Radius: ', '')},
-
-            'square based pyramid': {
-                'width': ('width', 'Width: ', ''),
-                'height': ('height', 'Height: ', '')},
-
-            'triangle based pyramid': {
-                'side1': ('side1', 'First side of triangle: ', ''),
-                'side2': ('side2', 'Second side of triangle: ', ''),
-                'side3': ('side3', 'Third side of triangle: ', ''),
-                'height': ('height', 'Height: ', '')},
+            'cuboid': ['length', 'width', 'height'],
+            'cube': ['length'],
+            'cylinder': ['radius', 'height'],
+            'triangular prism': ['side1', 'side2', 'side3', 'length'],
+            'cone': ['radius', 'height'],
+            'sphere': ['radius'],
+            'square based pyramid': ['width', 'height'],
+            'triangle based pyramid': ['side1', 'side2', 'side3', 'height']
         }
 
         # Dictionary containing formulas for volume and surface area for each shape
@@ -276,7 +264,7 @@ def calc_shape(shape, dimension, to_calculate):
         }
 
     # Retrieve prompts for user inputs associated with the chosen shape
-    prompts = input_prompts[shape]
+    prompts = {key: prompt_dict[key] for key in input_prompts[shape]}
 
     # Create dictionary for user inputs needed for calculation
     inputs = {
@@ -493,7 +481,7 @@ while True:
 # If there is a 2d shape then make and set data
 if len(shape_2d_list) > 0:
     print()
-    subtitle_2d = "**** 2D Shapes ****\n"
+    subtitle_2d = "**** 2D Shapes ****"
 
     # Create the table frame for our data
     results_2d_frame = pandas.DataFrame(panda_2d_dict)
@@ -515,7 +503,7 @@ if len(shape_2d_list) > 0:
 # If there is a 3d shape then make and set data
 if len(shape_3d_list) > 0:
     print()
-    subtitle_3d = "**** 3D Shapes ****\n"
+    subtitle_3d = "**** 3D Shapes ****"
 
     # Create the table frame for our data
     results_3d_frame = pandas.DataFrame(panda_3d_dict)
@@ -538,13 +526,27 @@ if len(shape_3d_list) > 0:
 write_to_file = string_checker("Do you want to save the data: ", 1, yn_list)
 
 if write_to_file == 'yes':
+    # Set up everything for the file
 
     # Ask for file name
     file_name = input("File name: ")
 
-    title = f"*** {file_name} ***\n\n"
+    # Set the title
+    title = f"*** {file_name.replace('.txt', '')} ***\n"
 
+    # add title to the start of to write
     to_write.insert(0, title)
+
+    # create file to hold data (Add .txt extension)
+    text_file = open(f"{file_name}.txt", 'w+')
+
+    # Write to file...
+    for item in to_write:
+        text_file.write(item)
+        text_file.write("\n\n")
+
+    # close file
+    text_file.close()
 
 print()
 print(color_text('Thank you for using the Super Shape Calculator', 'green'))
