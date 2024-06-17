@@ -28,6 +28,7 @@ def color_text(text, color):
 # checks user answers with valid answer
 def string_checker(question, num_letters, valid_list, custom_error=None):
 
+    # Set the default error
     default_error = f"Please choose from {', '.join(valid_list)}"
 
     while True:
@@ -295,33 +296,43 @@ def calc_shape(shape, dimension, to_calculate, user_shape):
 
 # Main code
 def main():
+    # Title
     color_text("<<<<< Welcome to the Super Shape Calculator! >>>>>", 'blue')
     print()
 
+    # Ask if user wants instructions
     show_instructions = string_checker("Do you want to read the instructions? ", 1, yn_list)
+
+    # if user wants instructions print them
     if show_instructions == 'yes':
         instructions()
 
     # Main loop
     while True:
+        # Ask for a shape using get_user_input func
         user_shape = get_user_input()
+
+        # If user enters 'xxx' end the session
         if user_shape == 'xxx':
             break
 
+        # Find what dimension the shape is
         dimensions = '2d' if user_shape in shapes_2d else '3d'
         print()
 
+        # Ask user what the want calculated
         whats_calculated = string_checker(
-            "Do you want area, perimeter or both calculated? " if dimensions == '2d' else "Do you want the volume, surface area or both calculated? ",
-            1, option_list_2d if dimensions == '2d' else option_list_3d
+            "Do you want area, perimeter or both calculated? " if dimensions == '2d'  # if the shape 2D perimeter and area
+            else "Do you want the volume, surface area or both calculated? ",  # if the shape 3D volume and surface area
+            1, option_list_2d if dimensions == '2d' else option_list_3d  # Set the valid input list depending on dimension
         )
 
+        # Use calc_shape func to calculate the shape and print out the answer
         calc_shape(user_shape, dimensions, whats_calculated, user_shape)
 
-        if dimensions == '2d':
-            panda_2d_dict.update(answer_2d_dict)
-        else:
-            panda_3d_dict.update(answer_3d_dict)
+    # Add answers to the panda dict
+    panda_2d_dict.update(answer_2d_dict)
+    panda_3d_dict.update(answer_3d_dict)
 
     display_and_save_results()
 
@@ -478,4 +489,3 @@ to_write = []
 
 # ***** Start the main program *****
 main()
-
