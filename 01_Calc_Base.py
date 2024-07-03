@@ -8,7 +8,7 @@ from tabulate import tabulate
 def color_text(text, color):
     # Code was found using chatGpt using prompt
     # "Python function that allows me to change the text color"
-    # Code was changed a bit as some parts were unneeded
+    # Code was changed a bit as some parts were unneeded and useless
 
     # list of colors
     colors = {
@@ -53,27 +53,33 @@ def string_checker(question, num_letters, valid_list, custom_error=None):
 
 
 # checks users enter a float between a low and high number
-def num_check(question, low=None):
+def num_check(question, low):
 
     while True:
         try:
             # Ask the question
             response = input(question)
 
+            # Convert response float
+            response_float = float(response)
+
             # Check if response is 'xxx'
             if response.lower() == 'xxx':
                 return response
 
-            # Convert the response to a float
-            response = float(response)
+            # If the number is 156 or more characters give an error
+            if len(response) >= 156:
+                color_text(f"Please enter a reasonable number with less than 156 characters .", 'red')
 
-            # Checks input is not too low
-            if low is not None and response <= low:
-                color_text(f"Please enter a number greater than {low}", 'red')
+            # If number is smaller than the low number give error
+            elif response_float < low:
+                color_text(f"Please enter a number over {low}.", 'red')
 
+            # If nothing is wrong then return the number as a float
             else:
-                return response
+                return response_float
 
+        # If the input isn't a valid number give error
         except ValueError:
             color_text("Please enter a valid number", 'red')
 
@@ -91,19 +97,15 @@ Here's how to use it:
    - Type 'shapes' to see the list of valid shape options or 'xxx' to quit the program.
    - The program will automatically determine whether your shape is 2D or 3D.
 
-2. **Choose Calculation**:
-   - For 2D shapes, you can choose to calculate the area, perimeter, or both.
-   - For 3D shapes, you can choose to calculate the volume, surface area, or both.
+2. **Enter Dimensions**:
+   - The program will prompt you to enter the necessary dimensions for the chosen shape (e.g., radius for a circle).
 
-3. **Enter Dimensions**:
-   - The program will prompt you to enter the necessary dimensions for the chosen shape (e.g., radius for a circle, length and width for a rectangle).
-
-4. **View Results**:
-   - The program will display the calculated properties (area, perimeter, volume, or surface area) of the shape.
+3. **View Results**:
+   - The program will display the calculated properties (area, perimeter or volume, surface area) of the shape.
    - At the end of the session, the program will display a summary table of all shapes and their calculated properties.
    - You will also have the option to save the results to a file.
 
-5. **Quit the Program**:
+4. **Quit the Program**:
    - To exit the program, type 'xxx' when prompted for a shape.
 
 Enjoy using the Super Shape Calculator!
@@ -151,7 +153,7 @@ def herons_formula(a, b, c):
 
 # Calculates shapes area and perimeter /
 # volume and surface area and prints out the answer
-def calc_shape(shape, dimension, to_calculate, user_shape):
+def calc_shape(shape, dimension, user_shape):
 
     # Set up the parameter dictionary
     parameter_dict = {}
@@ -159,11 +161,11 @@ def calc_shape(shape, dimension, to_calculate, user_shape):
     if dimension == '2d':
         dimension_parameter_lists = parameter_2d_list_dict
 
-        to_calculate_list = ['area', 'perimeter', 'both']
+        to_calculate_list = ['area', 'perimeter']
     else:
         dimension_parameter_lists = parameter_3d_list_dict
 
-        to_calculate_list = ['volume', 'surface area', 'both']
+        to_calculate_list = ['volume', 'surface area']
 
     # Common prompts
     prompt_dict = {
@@ -240,9 +242,7 @@ def calc_shape(shape, dimension, to_calculate, user_shape):
         if not (inputs['side1'] + inputs['side2'] > inputs['side3'] and
                 inputs['side1'] + inputs['side3'] > inputs['side2'] and
                 inputs['side2'] + inputs['side3'] > inputs['side1']):
-            print(color_text("The sides entered do not form a valid triangle.", 'red'))
-            print()
-            return
+            return color_text("The sides entered do not form a valid triangle. (Sum of 2 sides is greater than the third)", 'red')
 
     # Set the previously added parameters that aren't used for this shape to N/A
     for parameter, value_list in dimension_parameter_lists.items():
@@ -274,13 +274,11 @@ def calc_shape(shape, dimension, to_calculate, user_shape):
 
     print()
 
-    # If user asked for area / volume or both then print answer one (area / volume)
-    if to_calculate == to_calculate_list[0] or to_calculate == to_calculate_list[2]:
-        print(f'{to_calculate_list[0]}: {result_one}')
+    # print answer one area / volume depending on 2d / 3d
+    print(f'{to_calculate_list[0]}: {result_one}')
 
-    # If user asked for perimeter / surface area or both then print answer two (perimeter / surface area)
-    if to_calculate == to_calculate_list[1] or to_calculate == to_calculate_list[2]:
-        print(f'{to_calculate_list[1]}: {result_two}')
+    # print answer two  / surface area depending on 2d / 3d
+    print(f'{to_calculate_list[1]}: {result_two}')
 
     # If a 2d shape then add answer to the 2d shape lists
     if dimension == '2d':
@@ -292,49 +290,6 @@ def calc_shape(shape, dimension, to_calculate, user_shape):
         surface_area_list.append(result_two)
 
     print()
-
-
-# Main code
-def main():
-    # Title
-    color_text("<<<<< Welcome to the Super Shape Calculator! >>>>>", 'blue')
-    print()
-
-    # Ask if user wants instructions
-    show_instructions = string_checker("Do you want to read the instructions? ", 1, yn_list)
-
-    # if user wants instructions print them
-    if show_instructions == 'yes':
-        instructions()
-
-    # Main loop
-    while True:
-        # Ask for a shape using get_user_input func
-        user_shape = get_user_input()
-
-        # If user enters 'xxx' end the session
-        if user_shape == 'xxx':
-            break
-
-        # Find what dimension the shape is
-        dimensions = '2d' if user_shape in shapes_2d else '3d'
-        print()
-
-        # Ask user what the want calculated
-        whats_calculated = string_checker(
-            "Do you want area, perimeter or both calculated? " if dimensions == '2d'  # if the shape 2D perimeter and area
-            else "Do you want the volume, surface area or both calculated? ",  # if the shape 3D volume and surface area
-            1, option_list_2d if dimensions == '2d' else option_list_3d  # Set the valid input list depending on dimension
-        )
-
-        # Use calc_shape func to calculate the shape and print out the answer
-        calc_shape(user_shape, dimensions, whats_calculated, user_shape)
-
-    # Add answers to the panda dict
-    panda_2d_dict.update(answer_2d_dict)
-    panda_3d_dict.update(answer_3d_dict)
-
-    display_and_save_results()
 
 
 # Displays the results and ask if user wants to save
@@ -392,6 +347,43 @@ def save_to_file():
         for item in to_write:
             text_file.write(item)
             text_file.write("\n\n")
+
+
+# Main code
+def main():
+    # Title
+    color_text("<<<<< Welcome to the Super Shape Calculator! >>>>>", 'blue')
+    print()
+
+    # Ask if user wants instructions
+    show_instructions = string_checker("Do you want to read the instructions? ", 1, yn_list)
+
+    # if user wants instructions print them
+    if show_instructions == 'yes':
+        instructions()
+
+    # Main loop
+    while True:
+        print()
+        # Ask for a shape using get_user_input func
+        user_shape = get_user_input()
+
+        # If user enters 'xxx' end the session
+        if user_shape == 'xxx':
+            break
+
+        # Find what dimension the shape is
+        dimensions = '2d' if user_shape in shapes_2d else '3d'
+        print()
+
+        # Use calc_shape func to calculate the shape and print out the answer
+        calc_shape(user_shape, dimensions, user_shape)
+
+    # Add answers to the panda dict
+    panda_2d_dict.update(answer_2d_dict)
+    panda_3d_dict.update(answer_3d_dict)
+
+    display_and_save_results()
 
 
 # Set pi
