@@ -60,20 +60,20 @@ def num_check(question, low):
             # Ask the question
             response = input(question)
 
-            # Convert response float
-            response_float = float(response)
-
             # Check if response is 'xxx'
             if response.lower() == 'xxx':
                 return response
 
+            # Convert response to float
+            response_float = float(response)
+
             # If the number is 156 or more characters give an error
             if len(response) >= 156:
-                color_text(f"Please enter a reasonable number with less than 156 characters .", 'red')
+                color_text(f"Please enter a reasonable number with less than 156 characters.", 'red')
 
-            # If number is smaller than the low number give error
-            elif response_float < low:
-                color_text(f"Please enter a number over {low}.", 'red')
+            # If number is smaller than or equal to the low number give error
+            elif response_float <= low:
+                color_text(f"Please enter a number greater than {low}.", 'red')
 
             # If nothing is wrong then return the number as a float
             else:
@@ -199,10 +199,14 @@ def calc_shape(shape, dimension, user_shape):
 
         # Dictionary containing formulas for area and perimeter for each shape
         '2d': {
-            'circle': {'area': lambda r: pi * r ** 2, 'perimeter': lambda r: 2 * pi * r},
-            'square': {'area': lambda s: s ** 2, 'perimeter': lambda s: 4 * s},
-            'rectangle': {'area': lambda l, w: l * w, 'perimeter': lambda l, w: 2 * (l + w)},
-            'triangle': {'area': lambda s1, s2, s3: herons_formula(s1, s2, s3), 'perimeter': lambda s1, s2, s3: s1 + s2 + s3}
+            'circle': {'area': lambda r: pi * r ** 2,
+                       'perimeter': lambda r: 2 * pi * r},
+            'square': {'area': lambda s: s ** 2,
+                       'perimeter': lambda s: 4 * s},
+            'rectangle': {'area': lambda l, w: l * w,
+                          'perimeter': lambda l, w: 2 * (l + w)},
+            'triangle': {'area': lambda s1, s2, s3: herons_formula(s1, s2, s3),
+                         'perimeter': lambda s1, s2, s3: s1 + s2 + s3}
         },
 
         # Dictionary containing formulas for volume and surface area for each shape
@@ -229,7 +233,8 @@ def calc_shape(shape, dimension, user_shape):
                                      'surface area': lambda w, h: w ** 2 + w * math.sqrt((w / 2) ** 2 + h ** 2) * 2},
 
             'triangle based pyramid': {'volume': lambda a, b, c, h: 1 / 3 * herons_formula(a, b, c) * h,
-                                       'surface area': lambda a, b, c, h: a + b + c + (math.sqrt(h ** 2 + (a / 2) ** 2) * 3)}
+                                       'surface area': lambda a, b, c, h: a + b + c + (
+                                               math.sqrt(h ** 2 + (a / 2) ** 2) * 3)}
         }
     }
 
@@ -242,7 +247,8 @@ def calc_shape(shape, dimension, user_shape):
         if not (inputs['side1'] + inputs['side2'] > inputs['side3'] and
                 inputs['side1'] + inputs['side3'] > inputs['side2'] and
                 inputs['side2'] + inputs['side3'] > inputs['side1']):
-            return color_text("The sides entered do not form a valid triangle. (Sum of 2 sides is greater than the third)", 'red')
+            return color_text("The sides entered do not form a valid triangle. "
+                              "(Sum of 2 sides is greater than the third)", 'red')
 
     # Set the previously added parameters that aren't used for this shape to N/A
     for parameter, value_list in dimension_parameter_lists.items():
@@ -292,6 +298,19 @@ def calc_shape(shape, dimension, user_shape):
     print()
 
 
+# Checks that users response is not blank
+def not_blank(question):
+
+    while True:
+        response = input(question)
+
+        if response == "":
+            color_text("Sorry this can't be blank. Please try again", "red")
+
+        else:
+            return response
+
+
 # Displays the results and ask if user wants to save
 def display_and_save_results():
     # If there are 2D shapes then display data
@@ -303,12 +322,12 @@ def display_and_save_results():
         display_results("**** 3D Shapes ****", panda_3d_dict)
 
     print()
-
-    # Ask the user if they want to save the data to a file
-    write_to_file = string_checker("Do you want to save the data: ", 1, yn_list)
-    if write_to_file == 'yes':
-        # If yes then use save to file func
-        save_to_file()
+    if shape_2d_list or shape_3d_list:
+        # Ask the user if they want to save the data to a file
+        write_to_file = string_checker("Do you want to save the data: ", 1, yn_list)
+        if write_to_file == 'yes':
+            # If yes then use save to file func
+            save_to_file()
 
     print()
     color_text('Thank you for using the Super Shape Calculator', 'green')
@@ -333,7 +352,7 @@ def display_results(subtitle, panda_dict):
 # Saves data to a text file
 def save_to_file():
     # Ask for file name
-    file_name = input("File name: ")
+    file_name = not_blank("File name: ")
 
     # Set title as the file name
     title = f"*** {file_name} ***\n"
